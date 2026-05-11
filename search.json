@@ -32,14 +32,14 @@
     "href": "05_dashboard.html#panel-3-epidemiological-parameters",
     "title": "Session 5 — AMCHSS COVID-19 Dashboard",
     "section": "Panel 3 — Epidemiological Parameters",
-    "text": "Panel 3 — Epidemiological Parameters\n\nSix tabsRt in detail\n\n\n\nGrowth Rate — log-linear r per state, 95% CI (Wave 2 default).\nDoubling Time — log(2) / r, same fits.\nEffective Rt — 3D plotly ribbon, per state, over time.\nCase Fatality Rate — last 30 days, daily.\nInfected Proportion — cumulative cases / projected 2020 population.\nVaccinated Proportion — % of &gt;18 yr population fully vaccinated.\n\n\n\n\nMethod: R0::est.R0.TD() — Wallinga & Teunis (2004) time-dependent R, gamma generation time (mean 4.4, sd 3 days), 95% bootstrap CI per state.\nSame renewal-equation family as our Foundations demo. Different package (R0 vs EpiEstim), different smoothing — same idea.\n\n\n\n\nSpend most time on the Rt tab. There are several Rt packages — EpiEstim (Cori), R0 (Wallinga–Teunis), EpiNow2 (Bayesian). Pick one, document your choice."
+    "text": "Panel 3 — Epidemiological Parameters\n\nSix tabsRt in detail\n\n\n\nGrowth Rate — log-linear r per state, 95% CI (Wave 2 default).\nDoubling Time — log(2) / r, same fits.\nEffective Rt — 3D plotly ribbon, per state, over time.\nCase Fatality Rate — last 30 days, daily.\nInfected Proportion — cumulative cases / projected 2020 population.\nVaccinated Proportion — % of &gt;18 yr population fully vaccinated.\n\n\n\n\n\n\n\n\nAbove: the Growth Rate tab (log-linear r by state, 95% CI). The Effective Rt tab is a 3D plotly ribbon — best seen live.\nMethod: R0::est.R0.TD() — Wallinga & Teunis (2004) time-dependent R, gamma generation time (mean 4.4, sd 3 days), 95% bootstrap CI per state.\nSame renewal-equation family as our Foundations demo. Different package (R0 vs EpiEstim), different smoothing — same idea.\n\n\n\n\nSpend most time on the Rt tab. There are several Rt packages — EpiEstim (Cori), R0 (Wallinga–Teunis), EpiNow2 (Bayesian). Pick one, document your choice."
   },
   {
     "objectID": "05_dashboard.html#panel-4-projections",
     "href": "05_dashboard.html#panel-4-projections",
     "title": "Session 5 — AMCHSS COVID-19 Dashboard",
     "section": "Panel 4 — Projections",
-    "text": "Panel 4 — Projections\n\nState selector → 15-day forward forecast of daily incidence using projections::project() — branching-process simulation seeded with the recent log-linear fit.\n\nForward projections are a tail of forecasts, not a single line. Ask: where’s the uncertainty in this plot?"
+    "text": "Panel 4 — Projections\n\nState selector → 15-day forward forecast of daily incidence using projections::project() — branching-process simulation seeded with the recent log-linear fit. The faint forecast lines at the right edge fan by assumed change in Rt.\n\nForward projections are a tail of forecasts, not a single line. Ask: where’s the uncertainty in this plot?"
   },
   {
     "objectID": "05_dashboard.html#panel-5-about",

@@ -239,10 +239,10 @@ Dr.&nbsp;Arun Mitra
 </ol>
 <p>The handout has a 4-column table — fill it as we go.</p>
 </section>
-<section id="panel-1-home" class="slide level2">
+<section id="panel-1-home" class="slide level2 smaller">
 <h2>Panel 1 — Home</h2>
-<!-- TODO: insert PNG screenshot of Home panel, alt: "AMCHSS dashboard home page with value boxes, choropleth maps and 14-day epi curve" -->
-<p>Five value boxes (Confirmed · Active · Recovered · Deceased · % Active in last week), three map tabs (Deaths per 1000 · Active per lakh · % &gt;18 yrs vaccinated), and a 14-day moving-average epicurve.</p>
+
+<img data-src="images/dashboard_home.png" class="quarto-figure quarto-figure-center r-stretch" style="width:92.0%"><p>Five value boxes (Confirmed · Active · Recovered · Deceased · % Active in last week), three map tabs (Deaths per 1000 · Active per lakh · % &gt;18 yrs vaccinated), and a 14-day moving-average epicurve.</p>
 <p><strong>From today</strong>: descriptive epi + the line list → incidence → plot pipeline.</p>
 </section>
 <section id="panel-2-epidemic-curves" class="slide level2">
@@ -280,7 +280,12 @@ Dr.&nbsp;Arun Mitra
 </ul>
 </div>
 <div id="tabset-1-2">
-<!-- TODO: insert PNG of the 3D plotly Rt ribbon -->
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="images/dashboard_epi_params.png" class="quarto-figure quarto-figure-center" style="width:88.0%"></p>
+</figure>
+</div>
+<p>Above: the <em>Growth Rate</em> tab (log-linear <code>r</code> by state, 95% CI). The <em>Effective R<sub>t</sub></em> tab is a 3D <code>plotly</code> ribbon — best seen live.</p>
 <p>Method: <code>R0::est.R0.TD()</code> — Wallinga &amp; Teunis (2004) time-dependent R, gamma generation time (mean 4.4, sd 3 days), 95% bootstrap CI per state.</p>
 <p>Same renewal-equation family as our Foundations demo. Different package (<code>R0</code> vs <code>EpiEstim</code>), different smoothing — same idea.</p>
 </div>
@@ -300,10 +305,10 @@ Dr.&nbsp;Arun Mitra
           display:block!important;
       }</style></aside>
 </section>
-<section id="panel-4-projections" class="slide level2">
+<section id="panel-4-projections" class="slide level2 smaller">
 <h2>Panel 4 — Projections</h2>
-<!-- TODO: insert PNG of Projections panel -->
-<p>State selector → 15-day forward forecast of daily incidence using <code>projections::project()</code> — branching-process simulation seeded with the recent log-linear fit.</p>
+
+<img data-src="images/dashboard_projections.png" class="quarto-figure quarto-figure-center r-stretch" style="width:92.0%"><p>State selector → 15-day forward forecast of daily incidence using <code>projections::project()</code> — branching-process simulation seeded with the recent log-linear fit. The faint forecast lines at the right edge fan by assumed change in R<sub>t</sub>.</p>
 <aside class="notes">
 <p>Forward projections are a tail of forecasts, not a single line. Ask: where’s the uncertainty in this plot?</p>
 <style type="text/css">
