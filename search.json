@@ -1,0 +1,919 @@
+[
+  {
+    "objectID": "05_dashboard.html#what-is-the-amchss-dashboard",
+    "href": "05_dashboard.html#what-is-the-amchss-dashboard",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "What Is the AMCHSS Dashboard?",
+    "text": "What Is the AMCHSS Dashboard?\nBuilt at AMCHSS, SCTIMST Trivandrum (Prof. Biju Soman’s group). A live R + flexdashboard + shiny COVID-19 surveillance and modelling tool for India.\nFive panels: Home · Epidemic Curves · Epidemiological Parameters · Projections · About.\nhttps://amchss-sctimst.shinyapps.io/covid_dashboard/\n\nOpen it now in a browser. Keep PNG screenshots ready in case wifi fails."
+  },
+  {
+    "objectID": "05_dashboard.html#how-to-watch",
+    "href": "05_dashboard.html#how-to-watch",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "How to Watch",
+    "text": "How to Watch\nFor each panel, ask:\n\nWhat question is it answering?\nWhat input data does it need?\nWhich method from today sits behind it?\nWhat’s the uncertainty?\n\nThe handout has a 4-column table — fill it as we go."
+  },
+  {
+    "objectID": "05_dashboard.html#panel-1-home",
+    "href": "05_dashboard.html#panel-1-home",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Panel 1 — Home",
+    "text": "Panel 1 — Home\n\nFive value boxes (Confirmed · Active · Recovered · Deceased · % Active in last week), three map tabs (Deaths per 1000 · Active per lakh · % &gt;18 yrs vaccinated), and a 14-day moving-average epicurve.\nFrom today: descriptive epi + the line list → incidence → plot pipeline."
+  },
+  {
+    "objectID": "05_dashboard.html#panel-2-epidemic-curves",
+    "href": "05_dashboard.html#panel-2-epidemic-curves",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Panel 2 — Epidemic Curves",
+    "text": "Panel 2 — Epidemic Curves\n\nState selector → interactive dygraphs curve. The “First and Second Waves” tab overlays log-linear fits per wave.\nThe dashboard fits a log-linear incidence::fit() to each wave — same idea as our glm(I ~ date, family = poisson()).\n\nPick Kerala or Maharashtra. Show how the wave split snaps the same series into two distinct fits."
+  },
+  {
+    "objectID": "05_dashboard.html#panel-3-epidemiological-parameters",
+    "href": "05_dashboard.html#panel-3-epidemiological-parameters",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Panel 3 — Epidemiological Parameters",
+    "text": "Panel 3 — Epidemiological Parameters\n\nSix tabsRt in detail\n\n\n\nGrowth Rate — log-linear r per state, 95% CI (Wave 2 default).\nDoubling Time — log(2) / r, same fits.\nEffective Rt — 3D plotly ribbon, per state, over time.\nCase Fatality Rate — last 30 days, daily.\nInfected Proportion — cumulative cases / projected 2020 population.\nVaccinated Proportion — % of &gt;18 yr population fully vaccinated.\n\n\n\n\nMethod: R0::est.R0.TD() — Wallinga & Teunis (2004) time-dependent R, gamma generation time (mean 4.4, sd 3 days), 95% bootstrap CI per state.\nSame renewal-equation family as our Foundations demo. Different package (R0 vs EpiEstim), different smoothing — same idea.\n\n\n\n\nSpend most time on the Rt tab. There are several Rt packages — EpiEstim (Cori), R0 (Wallinga–Teunis), EpiNow2 (Bayesian). Pick one, document your choice."
+  },
+  {
+    "objectID": "05_dashboard.html#panel-4-projections",
+    "href": "05_dashboard.html#panel-4-projections",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Panel 4 — Projections",
+    "text": "Panel 4 — Projections\n\nState selector → 15-day forward forecast of daily incidence using projections::project() — branching-process simulation seeded with the recent log-linear fit.\n\nForward projections are a tail of forecasts, not a single line. Ask: where’s the uncertainty in this plot?"
+  },
+  {
+    "objectID": "05_dashboard.html#panel-5-about",
+    "href": "05_dashboard.html#panel-5-about",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Panel 5 — About",
+    "text": "Panel 5 — About\nTeam at AMCHSS / SCTIMST. Methodology references (Mitra et al. 2020, PLOS ONE). Data attribution to covid19india.org.\nA dashboard’s About page is part of the methodology. Always read it."
+  },
+  {
+    "objectID": "05_dashboard.html#the-stack",
+    "href": "05_dashboard.html#the-stack",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "The Stack",
+    "text": "The Stack\n\nR — everything we did today.\nflexdashboard + shiny — single Rmd, multiple panels.\nDaily ingest from api.covid19india.org.\nAnalytics — incidence for fits, R0::est.R0.TD for Rt, projections for forecasts.\nGeospatial — sf + mapview + leaflet.\nHosting — shinyapps.io free tier."
+  },
+  {
+    "objectID": "05_dashboard.html#whats-in-the-repo",
+    "href": "05_dashboard.html#whats-in-the-repo",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "What’s in the Repo",
+    "text": "What’s in the Repo\namchss_covid_dashboard/\n├── covid_dashboard.Rmd           # the flexdashboard\n├── 1_analysis_code_run_sequence.R   # rebuild all RDS outputs\n├── Rscripts/\n│   ├── load_packages.R · load_data.R · tidy_data.R\n│   ├── statewise_epidemiological_parameters.R   # R0, growth rate, doubling time\n│   ├── statewise_projections.R · vaccine.R\n│   └── homepage_fig1.R · value_boxes.R\n├── data/   # state shapefiles, population\n└── rds/    # pre-computed analytic outputs\nPattern: heavy compute → .rds cache → fast dashboard load. Fits run nightly; the dashboard reads the cached output."
+  },
+  {
+    "objectID": "05_dashboard.html#a-mini-dashboard-in-25-lines",
+    "href": "05_dashboard.html#a-mini-dashboard-in-25-lines",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "A Mini-Dashboard in 25 Lines",
+    "text": "A Mini-Dashboard in 25 Lines\n\nlibrary(shiny); library(flexdashboard); library(EpiEstim)\ncovid &lt;- readr::read_csv(here::here(\"data\", \"covid_india_daily.csv\")) |&gt;\n  dplyr::transmute(dates = date, I = as.integer(daily_confirmed))\n\n1ui &lt;- fluidPage(\n  titlePanel(\"Mini R(t) Dashboard\"),\n2  sliderInput(\"window\", \"Sliding window (days)\", 3, 14, value = 7),\n3  plotOutput(\"rt_plot\")\n)\n\n4server &lt;- function(input, output) {\n5  output$rt_plot &lt;- renderPlot({\n    n &lt;- nrow(covid)\n    rt &lt;- estimate_R(\n      incid  = covid,\n      method = \"parametric_si\",\n      config = make_config(list(\n        mean_si = 4.7, std_si = 2.9,\n6        t_start = seq(2, n - input$window),\n        t_end   = seq(2, n - input$window) + input$window\n      ))\n    )\n    plot(rt, \"R\")\n  })\n}\n\n7shinyApp(ui, server)\n\n\n1\n\nUI — what the user sees. Pure markup, no logic.\n\n2\n\nAn input with inputId = \"window\" — the server reads it as input$window.\n\n3\n\nAn output slot named rt_plot — paired with output$rt_plot in the server.\n\n4\n\nServer — the logic. Shiny re-runs the relevant blocks whenever any input they depend on changes.\n\n5\n\nThe output ID (rt_plot) matches the UI slot — that’s how Shiny wires them together.\n\n6\n\nThe reactive read. This line is the dependency — when the slider moves, this expression re-evaluates and the plot updates.\n\n7\n\nOne line ties UI and server together. Run this in RStudio and the app launches.\n\n\n\n\nThe AMCHSS dashboard is many of these, composed."
+  },
+  {
+    "objectID": "05_dashboard.html#design-choices",
+    "href": "05_dashboard.html#design-choices",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Design Choices",
+    "text": "Design Choices\n\nGeography — national or state? Aggregate hides heterogeneity; disaggregate adds noise.\nTime window — 7 days? 14 days? Affects Rt smoothness and delay.\nRt method — Cori, Wallinga–Teunis, EpiNow2 — different smoothing, different uncertainty model.\nUncertainty display — credible intervals, fan plots, or none?\nWhat’s not shown — biases, data caveats, assumed serial interval. How would you surface these?\nAudience — public, journalists, policy-makers, clinicians?\n\n\nGet one person to argue each side of the geography trade-off."
+  },
+  {
+    "objectID": "05_dashboard.html#where-did-this-help",
+    "href": "05_dashboard.html#where-did-this-help",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "Where Did This Help?",
+    "text": "Where Did This Help?\n\nWave 2 (2021) — real-time Rt informed state-level lockdown decisions.\nVaccine rollout — coverage maps highlighted lagging districts.\nWave 3 (Omicron) — fast doubling time made the Doubling Time tab the most-watched one.\nCapacity planning — 15-day projections fed ICU bed allocation.\n\nA dashboard is infrastructure. The methods underneath it are what we taught today."
+  },
+  {
+    "objectID": "05_dashboard.html#what-would-you-build",
+    "href": "05_dashboard.html#what-would-you-build",
+    "title": "Session 5 — AMCHSS COVID-19 Dashboard",
+    "section": "What Would You Build?",
+    "text": "What Would You Build?\nIn one sentence each:\n\nDisease?\nAudience?\nSingle most important panel?\n\n\nLightning round. One sentence per person, no discussion."
+  },
+  {
+    "objectID": "03_compartmental_models.html#a-grain-of-rice",
+    "href": "03_compartmental_models.html#a-grain-of-rice",
+    "title": "Compartmental Models",
+    "section": "A Grain of Rice!",
+    "text": "A Grain of Rice!\n\n\n\n\n\nTotal Grains: 18,446,744,073,709,551,615\nEstimated Mass: ~461,168,602,000 metric tons.\n\n\nThe Magic of Exponential Growth!"
+  },
+  {
+    "objectID": "03_compartmental_models.html#types-of-models-in-idm",
+    "href": "03_compartmental_models.html#types-of-models-in-idm",
+    "title": "Compartmental Models",
+    "section": "Types of Models in IDM",
+    "text": "Types of Models in IDM\n\n\n\n\n\n\n\nAxis\nChoices\n\n\n\n\nMechanistic vs statistical\nMechanism (SIR) vs pattern fitting (GLM, ARIMA)\n\n\nDeterministic vs stochastic\nSame input → same output vs same input → distribution\n\n\nPopulation vs individual\nCompartments (counts) vs agents (each person)\n\n\nHomogeneous vs structured\nOne pool vs age / space / risk groups\n\n\nTime\nContinuous (ODE) vs discrete (difference eqs, branching)"
+  },
+  {
+    "objectID": "03_compartmental_models.html#why-compartments",
+    "href": "03_compartmental_models.html#why-compartments",
+    "title": "Compartmental Models",
+    "section": "Why Compartments?",
+    "text": "Why Compartments?\n\nFew parameters. Easy to interpret.\nClosed-form intuition for R0, herd immunity, final size.\nSame skeleton extends to vaccination, age structure, spatial spread.\nThe dashboard at 15:30 sits on top of compartmental thinking."
+  },
+  {
+    "objectID": "03_compartmental_models.html#same-shape-different-disease",
+    "href": "03_compartmental_models.html#same-shape-different-disease",
+    "title": "Compartmental Models",
+    "section": "Same Shape, Different Disease",
+    "text": "Same Shape, Different Disease\n\n\nA 1918 flu epicurve and a COVID-19 wave look strikingly similar.\n\n\nCompartmental dynamics are universal. Three equations recreate this shape."
+  },
+  {
+    "objectID": "03_compartmental_models.html#sir-compartments",
+    "href": "03_compartmental_models.html#sir-compartments",
+    "title": "Compartmental Models",
+    "section": "SIR: Compartments",
+    "text": "SIR: Compartments\n\nMass-action: \\(\\lambda = \\beta \\times \\frac{I}{N}\\) assumes everyone mixes equally."
+  },
+  {
+    "objectID": "03_compartmental_models.html#sir-equations",
+    "href": "03_compartmental_models.html#sir-equations",
+    "title": "Compartmental Models",
+    "section": "SIR: Equations",
+    "text": "SIR: Equations\n\\[\n\\begin{aligned}\n\\frac{dS}{dt} &= -\\beta \\times S \\times \\frac{I}{N} \\\\\n\\frac{dI}{dt} &= +\\beta \\times S \\times \\frac{I}{N} - (\\gamma \\times I) \\\\\n\\frac{dR}{dt} &= +\\gamma \\times I\n\\end{aligned}\n\\]\nR0 = β / γ.\nβ = 0.3 / day,\nD = 1/γ = 7 days\nR0 = 2.1."
+  },
+  {
+    "objectID": "03_compartmental_models.html#sir-code",
+    "href": "03_compartmental_models.html#sir-code",
+    "title": "Compartmental Models",
+    "section": "SIR — Code",
+    "text": "SIR — Code\n\nlibrary(deSolve)\n\n1sir_eq &lt;- function(t, y, params) {\n2  with(as.list(c(y, params)), {\n3    dS &lt;- -beta * S * I / N\n    dI &lt;-  beta * S * I / N - gamma * I\n    dR &lt;-  gamma * I\n4    list(c(dS, dI, dR))\n  })\n}\n\n5out &lt;- ode(\n  y     = c(S = 1e6 - 10, I = 10, R = 0),\n  times = 0:200,\n  func  = sir_eq,\n  parms = c(beta = 0.3, gamma = 0.1, N = 1e6)\n) |&gt; \n  unclass() |&gt; \n  as.data.frame() |&gt; \n  as_tibble()\n\n\n1\n\nThe model is a function — takes time, state, parameters; returns rates of change.\n\n2\n\nwith(as.list(c(y, params))) lets us write S, I, beta, gamma by name instead of y[\"S\"], params[\"beta\"].\n\n3\n\nThe three derivatives — read out loud as one English sentence each (“susceptibles fall at rate β·S·I/N…”).\n\n4\n\ndeSolve expects a list whose first element is the vector of derivatives.\n\n5\n\node() integrates from t = 0 to t = 200 in steps of 1."
+  },
+  {
+    "objectID": "03_compartmental_models.html#sir-watch-it-run",
+    "href": "03_compartmental_models.html#sir-watch-it-run",
+    "title": "Compartmental Models",
+    "section": "SIR — Watch It Run",
+    "text": "SIR — Watch It Run"
+  },
+  {
+    "objectID": "03_compartmental_models.html#sir-trajectory",
+    "href": "03_compartmental_models.html#sir-trajectory",
+    "title": "Compartmental Models",
+    "section": "SIR — Trajectory",
+    "text": "SIR — Trajectory\n\n\nS drains as people get infected.\nI rises, peaks, then falls.\nR fills in — those who’ve been through it.\n\n\nPre-rendered with gganimate. Idea borrowed from F. Gazzelloni’s 2023 R-Ladies Rome talk; code regenerated. Let it loop while you talk through the right column."
+  },
+  {
+    "objectID": "03_compartmental_models.html#extending-sir-to-seir",
+    "href": "03_compartmental_models.html#extending-sir-to-seir",
+    "title": "Compartmental Models",
+    "section": "Extending SIR to SEIR",
+    "text": "Extending SIR to SEIR\n\nE = exposed but not yet infectious. Adds a latent period before transmission begins."
+  },
+  {
+    "objectID": "03_compartmental_models.html#from-sir",
+    "href": "03_compartmental_models.html#from-sir",
+    "title": "Compartmental Models",
+    "section": "From SIR…",
+    "text": "From SIR…\n\\[\n\\begin{aligned}\n\\frac{dS}{dt} &= -\\beta \\cdot S \\cdot I / N \\\\\n\\frac{dI}{dt} &= +\\beta \\cdot S \\cdot I / N - \\gamma \\cdot I \\\\\n\\frac{dR}{dt} &= +\\gamma \\cdot I\n\\end{aligned}\n\\]"
+  },
+  {
+    "objectID": "03_compartmental_models.html#to-seir",
+    "href": "03_compartmental_models.html#to-seir",
+    "title": "Compartmental Models",
+    "section": "…to SEIR",
+    "text": "…to SEIR\n\\[\n\\begin{aligned}\n\\frac{dS}{dt} &= -\\beta \\cdot S \\cdot I / N \\\\\n\\frac{dE}{dt} &= +\\beta \\cdot S \\cdot I / N - \\sigma \\cdot E \\\\\n\\frac{dI}{dt} &= +\\sigma \\cdot E - \\gamma \\cdot I \\\\\n\\frac{dR}{dt} &= +\\gamma \\cdot I\n\\end{aligned}\n\\]\nOne new equation. σ = 1 / mean latent period. Latency delays the peak — final size barely changes."
+  },
+  {
+    "objectID": "03_compartmental_models.html#seir-code",
+    "href": "03_compartmental_models.html#seir-code",
+    "title": "Compartmental Models",
+    "section": "SEIR — Code",
+    "text": "SEIR — Code\n\nseir_eq &lt;- function(t, y, params) {\n  with(as.list(c(y, params)), {\n    dS &lt;- -beta * S * I / N\n1    dE &lt;-  beta * S * I / N - sigma * E\n2    dI &lt;-  sigma * E - gamma * I\n    dR &lt;-  gamma * I\n3    list(c(dS, dE, dI, dR))\n  })\n}\n\n\n1\n\nThe new line: people who got infected enter E first, not I.\n\n2\n\ndI changes — the source is now σ · E, not β · S · I / N directly.\n\n3\n\nThe state vector grows by one — dE is added, in the same order as the initial conditions."
+  },
+  {
+    "objectID": "03_compartmental_models.html#sir-vs-seir-same-r0-different-timing",
+    "href": "03_compartmental_models.html#sir-vs-seir-same-r0-different-timing",
+    "title": "Compartmental Models",
+    "section": "SIR vs SEIR — Same R0, Different Timing",
+    "text": "SIR vs SEIR — Same R0, Different Timing"
+  },
+  {
+    "objectID": "03_compartmental_models.html#common-extensions",
+    "href": "03_compartmental_models.html#common-extensions",
+    "title": "Compartmental Models",
+    "section": "Common Extensions",
+    "text": "Common Extensions\n\n\n\n\n\n\n\n\nVariant\nNew mechanism\nUse when…\n\n\n\n\nSEIRS\nR → S (waning immunity)\nEndemic respiratory pathogens, repeated waves\n\n\nSEIRD\nI → D (deaths)\nMortality matters (Ebola, COVID severity)\n\n\nSVEIR\nS → V (vaccinated)\nVaccination programmes (Session 3)\n\n\nMSEIR\nM = maternal immunity\nChildhood diseases (measles in infants)\n\n\nAge-structured\nCompartments per age band\nHeterogeneous mixing (Session 3)\n\n\nMetapopulation\nCompartments per location\nSpatial spread between districts/states\n\n\n\nSame skeleton — add boxes, add arrows, add equations."
+  },
+  {
+    "objectID": "03_compartmental_models.html#seirs-waning-immunity",
+    "href": "03_compartmental_models.html#seirs-waning-immunity",
+    "title": "Compartmental Models",
+    "section": "SEIRS — Waning Immunity",
+    "text": "SEIRS — Waning Immunity\n\n\nseirs_eq &lt;- function(t, y, params) {\n  with(as.list(c(y, params)), {\n1    dS &lt;- -beta * S * I / N + omega * R\n    dE &lt;-  beta * S * I / N - sigma * E\n    dI &lt;-  sigma * E - gamma * I\n2    dR &lt;-  gamma * I - omega * R\n    list(c(dS, dE, dI, dR))\n  })\n}\n# omega = 1 / mean duration of immunity\n\n\n1\n\nRecovered people return to S at rate ω — that’s the only new term in dS.\n\n2\n\nThe mirror term in dR keeps the bookkeeping consistent (people leaving R are added to S).\n\n\n\n\nWith ω &gt; 0 the system can settle into endemic oscillations — recurrent waves. The engine behind seasonal flu and COVID re-infection patterns."
+  },
+  {
+    "objectID": "03_compartmental_models.html#seird-tracking-mortality",
+    "href": "03_compartmental_models.html#seird-tracking-mortality",
+    "title": "Compartmental Models",
+    "section": "SEIRD — Tracking Mortality",
+    "text": "SEIRD — Tracking Mortality\n\nThe flow out of I splits — fraction (1 − μ) recovers to R, fraction μ goes to D (cumulative deaths). μ = case fatality ratio.\n\nseird_eq &lt;- function(t, y, params) {\n  with(as.list(c(y, params)), {\n    dS &lt;- -beta * S * I / N\n    dE &lt;-  beta * S * I / N - sigma * E\n    dI &lt;-  sigma * E - gamma * I\n1    dR &lt;-  (1 - mu) * gamma * I\n2    dD &lt;-  mu * gamma * I\n    list(c(dS, dE, dI, dR, dD))\n  })\n}\n# mu = case fatality ratio\n\n\n1\n\nThe flow out of I splits — a fraction (1 − μ) recovers.\n\n2\n\nThe remaining fraction μ goes to D (cumulative deaths).\n\n\n\n\n\\(D\\) = cumulative deaths."
+  },
+  {
+    "objectID": "03_compartmental_models.html#stochastic-reality",
+    "href": "03_compartmental_models.html#stochastic-reality",
+    "title": "Compartmental Models",
+    "section": "Stochastic Reality",
+    "text": "Stochastic Reality\nSame R0 = 1.5. Same parameters. Different futures.\n\nReal outbreaks are noisy, especially when case counts are small. With I0 = 5, about 11/100 chains fizzle out and never become an outbreak — even though the deterministic model would always predict a wave."
+  },
+  {
+    "objectID": "03_compartmental_models.html#group-work",
+    "href": "03_compartmental_models.html#group-work",
+    "title": "Compartmental Models",
+    "section": "Group Work",
+    "text": "Group Work\n\n\n\nGroup\nDisease\nR0\nD (days)\n\n\n\n\n1\nMeasles-like\n15\n8\n\n\n2\nFlu-like\n1.5\n4\n\n\n3\nEbola-like\n2\n10\n\n\n4\nCOVID-19 like\n3\n7\n\n\n\nFor your group:\n\nRun the SIR script.\nBefore plotting, try to guess the peak time and final size.\nCompare prediction to plot.\n\n\nBonus:\n\nExtend to SEIR (σ = 1/5). What changed? What didn’t?"
+  },
+  {
+    "objectID": "03_compartmental_models.html#group-work-results",
+    "href": "03_compartmental_models.html#group-work-results",
+    "title": "Compartmental Models",
+    "section": "Group Work — Results",
+    "text": "Group Work — Results\n\nFinal size depends on R0 alone — Kermack–McKendrick. Bigger R0 → more people infected. Peak timing depends on β and γ separately — Group 3 (longest D) peaks latest, even though its R0 is moderate."
+  },
+  {
+    "objectID": "01_foundations.html#about-me",
+    "href": "01_foundations.html#about-me",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "About Me",
+    "text": "About Me\n\n\n\nAsst Prof, Dept of CFM @ AIIMS Bibinagar\n\n\n\n\nDomain Expertise:\n\nPublic Health Data Science\nSpatial Epidemiology\nInfectious Disease Modeling\nR Educator\n\n\n\n\n\n\n\n\n\nTrained in Modern Modeling Techniques @ LSHTM, UK\nMember of R Epidemics Consortium (RECon), Imperial College, London, UK\nCOVID-19 Testing Data — ICMR"
+  },
+  {
+    "objectID": "01_foundations.html#about-us",
+    "href": "01_foundations.html#about-us",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "About Us",
+    "text": "About Us\n\nTeam\n\nProf. Biju Soman, Professor, SCTIMST, Trivandrum\nDr. Adrija Roy, PhD Scholar, SCTIMST, Trivandrum\n\n\n\nTraining\n\nBasic Epi Course @ IISc, Bangalore (5 Days)\nSpatial Epi Summer School @ IIT, Bombay (3–4 Days)\nGIS Short Course @ CUG (5 Days)\nData Science for Public Health @ University of Oslo (3 Workshops, Hybrid)"
+  },
+  {
+    "objectID": "01_foundations.html#agenda-for-today",
+    "href": "01_foundations.html#agenda-for-today",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Agenda for Today",
+    "text": "Agenda for Today\n\n\n\nTime\nSession\n\n\n\n\n10:00–11:00\n1. Foundations\n\n\n11:00–11:15\nTea\n\n\n11:15–12:15\n2. Just Enough R\n\n\n12:15–13:15\n3. Compartmental Models\n\n\n13:15–14:15\nLunch\n\n\n14:15–15:15\n4. Scenario Modelling\n\n\n15:15–15:30\nTea\n\n\n15:30–16:30\n5. Putting it all Together\n\n\n16:30–17:00\nQ&A and wrap-up"
+  },
+  {
+    "objectID": "01_foundations.html#moments-in-history",
+    "href": "01_foundations.html#moments-in-history",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Moments in History",
+    "text": "Moments in History\n\nSmallpox variolation (1760s)  Swiss mathematician Daniel Bernoulli modeled the risks and benefits of inoculating against smallpox, considered the first mathematical model of disease spread (universal inoculation would increase life expectancy from 26 years to 29 years).\nSmallpox eradication (1967–77)  herd immunity threshold ~85% guided WHO’s surveillance-and-containment strategy.\nEbola Vaccine Trial in Guinea (2014–16)  “ring vaccination trial” (the rVSV-ZEBOV vaccine study), simulated that by immediately tracing contacts of a new index case, the transmission chain could be interrupted ."
+  },
+  {
+    "objectID": "01_foundations.html#what-is-a-model",
+    "href": "01_foundations.html#what-is-a-model",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "What is a Model?",
+    "text": "What is a Model?\n\nA simplified representation of a complex phenomenon.\n\n\n\n\n\n\n\n\n\n\nAll models are wrong, but some are useful.  — George E. P. Box"
+  },
+  {
+    "objectID": "01_foundations.html#why-model",
+    "href": "01_foundations.html#why-model",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Why Model?",
+    "text": "Why Model?\n\nUnderstand transmission — why does measles cycle every 2–3 years?\n\n\n\nAssess control — what % vaccination breaks transmission? \n\n\n\nPredict — if we don’t act, what happens in 2 weeks?"
+  },
+  {
+    "objectID": "01_foundations.html#the-reproduction-number-r0",
+    "href": "01_foundations.html#the-reproduction-number-r0",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "The Reproduction Number (R0)",
+    "text": "The Reproduction Number (R0)\n\n\nAverage number of secondary infectious persons resulting from one infectious person introduced into a totally susceptible population.\n\n\n\n\n\nThe number of secondary cases an infectious person generates."
+  },
+  {
+    "objectID": "01_foundations.html#rank-these-diseases-by-r0",
+    "href": "01_foundations.html#rank-these-diseases-by-r0",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Rank these Diseases by R0",
+    "text": "Rank these Diseases by R0\n\n\n\nMeasles\n\n\nMalaria\n\n\nHIV\n\n\nEbola"
+  },
+  {
+    "objectID": "01_foundations.html#empirical-r0-ranges",
+    "href": "01_foundations.html#empirical-r0-ranges",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Empirical R0 Ranges",
+    "text": "Empirical R0 Ranges\n\n\n\nDisease\nR0 range\nSetting\n\n\n\n\nMalaria\n5–100\nHighly variable; strong vector dependence\n\n\nMeasles\n12–18\nPre-vaccination, high-density populations\n\n\nHIV\n2–5\nSexual transmission networks\n\n\nEbola\n1.5–2.5\nClose-contact outbreaks\n\n\n\n\nR0 tracks transmissibility, not “scariness” or lethality.\n\n\nReveal one row at a time. Discuss why HIV’s R0 exceeds Ebola’s."
+  },
+  {
+    "objectID": "01_foundations.html#what-does-r0-depend-on",
+    "href": "01_foundations.html#what-does-r0-depend-on",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "What does R0 depend on?",
+    "text": "What does R0 depend on?\n\nThe number of contacts a person has per time (\\(c\\))\nThe probability of transmission given contact (\\(p\\))\nThe duration of infectiousness, (\\(D\\))\nThe proportion of contacts that are susceptible (\\(s\\))\n\n\nA simple model would suggest:\n\n\n\n\\[R_0 = c \\times p \\times D \\times s\\]"
+  },
+  {
+    "objectID": "01_foundations.html#r0-depends-on-context",
+    "href": "01_foundations.html#r0-depends-on-context",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "R0 Depends on Context",
+    "text": "R0 Depends on Context\nSame pathogen, different settings → different R0.\n\nMeasles in 1950s England: R0 ≈ 16\nMeasles in modern London: Re near 0 (vaccination)\nInfluenza on a cruise ship vs a low-density rural area\n\n\nModelling is local work,\n\n\nAnd, Context Driven!"
+  },
+  {
+    "objectID": "01_foundations.html#rt-in-one-line",
+    "href": "01_foundations.html#rt-in-one-line",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Rt in One Line",
+    "text": "Rt in One Line\n\nToday’s new cases come from past cases that are still infectious, weighted by how long ago they were infected.\n\nThat weighting = serial interval (or generation time).\n\\[\nI_t = R_t \\cdot \\sum_{s \\geq 1} I_{t-s} \\cdot w_s\n\\]"
+  },
+  {
+    "objectID": "01_foundations.html#glossary",
+    "href": "01_foundations.html#glossary",
+    "title": "Infectious Disease Modelling using R  ",
+    "section": "Glossary",
+    "text": "Glossary\n\n\n\n\n\n\n\nTerm\nPlain English\n\n\n\n\nR0\nSecondary cases from one case in a fully susceptible population\n\n\nRt (Re)\nSame, but at time t in the real population (some are immune)\n\n\nForce of infection (λ)\nRate at which susceptibles get infected per unit time\n\n\nSerial interval\nTime between onset in case A and onset in case B (B infected by A)\n\n\nGeneration time\nTime between infection of A and infection of B by A\n\n\nHerd immunity\nIndirect protection when enough are immune; threshold = 1 − 1/R0\n\n\n———————\n—————————————————"
+  },
+  {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "Resources",
+    "section": "",
+    "text": "Curated reading and tooling for after the workshop. Pick one book and one package this week, not all of them."
+  },
+  {
+    "objectID": "resources.html#tutorials-and-self-paced-courses",
+    "href": "resources.html#tutorials-and-self-paced-courses",
+    "title": "Resources",
+    "section": "Tutorials and self-paced courses",
+    "text": "Tutorials and self-paced courses\n\nEpiverse-TRACE tutorials — tutorials-early, -middle, -late. The same packages we use, taught at three levels.\nThe Epidemiologist R Handbook — practical recipes for outbreak data work. The first book to reach for.\nRECON Learn — case-study driven; many start from a line list and end at an Rₜ estimate."
+  },
+  {
+    "objectID": "resources.html#books",
+    "href": "resources.html#books",
+    "title": "Resources",
+    "section": "Books",
+    "text": "Books\n\nAnderson, R. M. & May, R. M. (1991). Infectious Diseases of Humans. Oxford University Press. The foundational text — where most of the R₀ values we quoted come from.\nVynnycky, E. & White, R. G. (2010). An Introduction to Infectious Disease Modelling. OUP. The most accessible classroom textbook.\nKeeling, M. J. & Rohani, P. (2008). Modeling Infectious Diseases in Humans and Animals. Princeton. Heavier on dynamics, lighter on code."
+  },
+  {
+    "objectID": "resources.html#live-tools",
+    "href": "resources.html#live-tools",
+    "title": "Resources",
+    "section": "Live tools",
+    "text": "Live tools\n\nAMCHSS COVID-19 Dashboard — Session 5’s case study. Open it, click around, then read the source on the dashboard’s About page.\noutbreaks — every line list you’ll need to practise on.\nThe Epidemiologist R Handbook — Case studies — paired with theory."
+  },
+  {
+    "objectID": "resources.html#going-further-bayesian-and-stochastic",
+    "href": "resources.html#going-further-bayesian-and-stochastic",
+    "title": "Resources",
+    "section": "Going further — Bayesian and stochastic",
+    "text": "Going further — Bayesian and stochastic\n\nStan boarding-school SIR case study — the canonical worked example for fitting an SIR to real data with Bayesian methods.\nEpiNow2 — production-grade Bayesian Rₜ with reporting delays.\nepichains — branching-process stochastic models when outbreaks are small.\nodin2 — a DSL for compiled, faster stochastic compartmental models."
+  },
+  {
+    "objectID": "resources.html#r-ladies-community-talks",
+    "href": "resources.html#r-ladies-community-talks",
+    "title": "Resources",
+    "section": "R-Ladies + community talks",
+    "text": "R-Ladies + community talks\n\nGazzelloni, F. (2023). Deterministic SIR model with R. R-Ladies Rome — github.com/Fgazzelloni/sir-model-with-R · slides.\nBuros, J. (2023). Bayesian SIR model with R — github.com/jburos/r-ladies-sir-model."
+  },
+  {
+    "objectID": "resources.html#workshop-homework",
+    "href": "resources.html#workshop-homework",
+    "title": "Resources",
+    "section": "Workshop homework",
+    "text": "Workshop homework\nPick one disease you care about, one dataset you have access to, and one method from today. Spend an evening trying it. Email questions."
+  },
+  {
+    "objectID": "code.html",
+    "href": "code.html",
+    "title": "Hands-on Code",
+    "section": "",
+    "text": "Every R script used in the hands-on portions of the workshop. Each is self-contained — open it in RStudio, run line-by-line."
+  },
+  {
+    "objectID": "code.html#group-scripts-compartmental-models-session-3",
+    "href": "code.html#group-scripts-compartmental-models-session-3",
+    "title": "Hands-on Code",
+    "section": "Group scripts — Compartmental Models (Session 3)",
+    "text": "Group scripts — Compartmental Models (Session 3)\nFour groups, four diseases. Each script runs an SIR model, prompts you to predict peak time and final size before plotting, and includes a bonus SEIR extension.\n\n\n\nScript\nDisease\nR0\nD (days)\n\n\n\n\nscripts/group1.R\nMeasles-like\n15\n8\n\n\nscripts/group2.R\nFlu-like\n1.5\n4\n\n\nscripts/group3.R\nEbola-like\n2\n10\n\n\nscripts/group4.R\nCOVID-19-like\n3\n7"
+  },
+  {
+    "objectID": "code.html#scenario-explorer-session-4",
+    "href": "code.html#scenario-explorer-session-4",
+    "title": "Hands-on Code",
+    "section": "Scenario explorer (Session 4)",
+    "text": "Scenario explorer (Session 4)\nscripts/scenario_explorer.R — a COVID-like SEIR with intervention switches (NPI + vaccination). Six pair tasks pre-defined (A–F); run the SETUP block once, then jump to your pair’s task."
+  },
+  {
+    "objectID": "code.html#builder-scripts-run-once-produces-cached-assets",
+    "href": "code.html#builder-scripts-run-once-produces-cached-assets",
+    "title": "Hands-on Code",
+    "section": "Builder scripts (run-once, produces cached assets)",
+    "text": "Builder scripts (run-once, produces cached assets)\n\nscripts/build_sir_animation.R — renders images/sir_animation.gif for the SIR-trajectory hook slide.\nscripts/build_stochastic_seir.R — renders images/stochastic_seir_trajectories.png (100 tau-leap trajectories at R0 = 1.5)."
+  },
+  {
+    "objectID": "code.html#data-preparation",
+    "href": "code.html#data-preparation",
+    "title": "Hands-on Code",
+    "section": "Data preparation",
+    "text": "Data preparation\n\ndata/prepare_covid_india_daily.R — downloads JHU CSSE confirmed cases, extracts the India series, derives daily counts, writes data/covid_india_daily.csv."
+  },
+  {
+    "objectID": "code.html#workshop-setup",
+    "href": "code.html#workshop-setup",
+    "title": "Hands-on Code",
+    "section": "Workshop setup",
+    "text": "Workshop setup\n\nsetup.R — one-shot installer for every package used across all five sessions. See the Setup guide."
+  },
+  {
+    "objectID": "code.html#how-to-download-a-single-script",
+    "href": "code.html#how-to-download-a-single-script",
+    "title": "Hands-on Code",
+    "section": "How to download a single script",
+    "text": "How to download a single script\nOn any GitHub file page, click the Raw button and save the page (Cmd/Ctrl + S). Or use curl:\ncurl -O https://raw.githubusercontent.com/drarunmitra/idm-jhapsmcon-2026/main/scripts/group1.R"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Infectious Disease Modelling in R",
+    "section": "",
+    "text": "A one-day, beginner-friendly workshop. By 5 pm you will be able to read every line of code behind a working Rt analysis — and recognise every panel in a real public-health dashboard."
+  },
+  {
+    "objectID": "index.html#quick-start",
+    "href": "index.html#quick-start",
+    "title": "Infectious Disease Modelling in R",
+    "section": "Quick start",
+    "text": "Quick start\n\n\n\n\n\n\nTipNew here?\n\n\n\n\nOpen the Setup guide and install R, RStudio, and the workshop packages (source(\"setup.R\")).\nSkim the Schedule below.\nThe night before the workshop, run the data prep script so the COVID-19 India dataset is ready locally."
+  },
+  {
+    "objectID": "index.html#schedule",
+    "href": "index.html#schedule",
+    "title": "Infectious Disease Modelling in R",
+    "section": "Schedule",
+    "text": "Schedule\n\n\n\nTime\nSession\n\n\n\n\n10:00–11:00\n1. Foundations — Why model · R0 / Rt\n\n\n11:00–11:15\n☕ Tea\n\n\n11:15–12:15\n2. Just Enough R — basics · tidyverse · ggplot · applied Rt\n\n\n12:15–13:15\n3. Compartmental Models — SIR / SEIR + extensions\n\n\n13:15–14:15\n🥗 Lunch\n\n\n14:15–15:15\n4. Scenario Modelling — counterfactual + 3 interventions\n\n\n15:15–15:30\n☕ Tea\n\n\n15:30–16:30\n5. AMCHSS COVID-19 Dashboard — guided walkthrough\n\n\n16:30–17:00\nQ&A and Wrap-up"
+  },
+  {
+    "objectID": "index.html#sessions",
+    "href": "index.html#sessions",
+    "title": "Infectious Disease Modelling in R",
+    "section": "Sessions",
+    "text": "Sessions\n\n\n1 · Foundations\nWhy model? R0 ranking. Rt in one line. Forward vs. inverse problems.\n\n\n2 · Just Enough R\nR basics, tidyverse, ggplot2, then estimate Rt from real Indian COVID-19 data.\n\n\n3 · Compartmental Models\nSIR with deSolve, SEIR, extensions (SEIRS, SEIRD), four-disease group work.\n\n\n4 · Scenario Modelling\nA COVID-like scenario with three interventions (NPI, vaccination, combined) vs. counterfactual, using epidemics.\n\n\n5 · AMCHSS Dashboard\nGuided walkthrough of the AMCHSS COVID-19 dashboard — every panel mapped to a concept from the day."
+  },
+  {
+    "objectID": "index.html#what-youll-take-home",
+    "href": "index.html#what-youll-take-home",
+    "title": "Infectious Disease Modelling in R",
+    "section": "What you’ll take home",
+    "text": "What you’ll take home\n\nA working R + RStudio setup for infectious disease modelling.\nSix rendered slide decks, downloadable.\nA library of hands-on R scripts you can adapt to your own data.\nThe COVID-19 India daily-case dataset (JHU CSSE), pre-cleaned for analysis.\nA printed cheat-sheet covering tidyverse verbs, the line-list pipeline, and the “which tool when?” decision aid."
+  },
+  {
+    "objectID": "index.html#team",
+    "href": "index.html#team",
+    "title": "Infectious Disease Modelling in R",
+    "section": "Team",
+    "text": "Team\nDr. Arun Mitra Peddireddy (lead) · Prof. Biju Soman · Dr. Gurpreet Singh · Dr. Adrija Roy. See the About page for full credits and attribution."
+  },
+  {
+    "objectID": "setup.html",
+    "href": "setup.html",
+    "title": "Setup Guide",
+    "section": "",
+    "text": "Do this the day before the workshop. If anything goes wrong, fixes are easier in your own time than in a packed conference room with patchy wifi."
+  },
+  {
+    "objectID": "setup.html#install-r",
+    "href": "setup.html#install-r",
+    "title": "Setup Guide",
+    "section": "1. Install R",
+    "text": "1. Install R\nDownload R (version 4.1 or later — we use the native |&gt; pipe). Default installer options are fine on every platform."
+  },
+  {
+    "objectID": "setup.html#install-rstudio-desktop",
+    "href": "setup.html#install-rstudio-desktop",
+    "title": "Setup Guide",
+    "section": "2. Install RStudio Desktop",
+    "text": "2. Install RStudio Desktop\nDownload RStudio Desktop (free version). Open it once after installing to confirm it launches."
+  },
+  {
+    "objectID": "setup.html#clone-or-download-this-repository",
+    "href": "setup.html#clone-or-download-this-repository",
+    "title": "Setup Guide",
+    "section": "3. Clone (or download) this repository",
+    "text": "3. Clone (or download) this repository\n\nGitZIP\n\n\ngit clone https://github.com/drarunmitra/idm-jhapsmcon-2026.git\ncd idm-jhapsmcon-2026\n\n\nUse the green Code → Download ZIP button on the repo page, then unzip."
+  },
+  {
+    "objectID": "setup.html#open-the-r-project",
+    "href": "setup.html#open-the-r-project",
+    "title": "Setup Guide",
+    "section": "4. Open the R project",
+    "text": "4. Open the R project\nDouble-click IDM_EFICON2024.Rproj (or use File → Open Project… in RStudio). This sets the working directory and ensures the here() package finds files correctly."
+  },
+  {
+    "objectID": "setup.html#install-the-workshop-packages",
+    "href": "setup.html#install-the-workshop-packages",
+    "title": "Setup Guide",
+    "section": "5. Install the workshop packages",
+    "text": "5. Install the workshop packages\nIn the R console:\nsource(\"setup.R\")\nThis runs a one-time package install via pak. Plan for 5–15 minutes depending on your network and how many packages you already have. The script will:\n\nInstall pak if missing\nConfigure the Epiverse-TRACE R-Universe repository\nInstall everything you’ll need across all five sessions\n\nIf a package fails to compile, install Xcode Command-Line Tools (macOS) or Rtools (Windows) and retry."
+  },
+  {
+    "objectID": "setup.html#verify-the-covid-19-india-dataset",
+    "href": "setup.html#verify-the-covid-19-india-dataset",
+    "title": "Setup Guide",
+    "section": "6. Verify the COVID-19 India dataset",
+    "text": "6. Verify the COVID-19 India dataset\nfile.exists(here::here(\"data\", \"covid_india_daily.csv\"))\n#&gt; [1] TRUE\nIf the file is missing (e.g. you pulled a fresh checkout and want the latest data):\nsource(here::here(\"data\", \"prepare_covid_india_daily.R\"))\nThis rebuilds the dataset from the JHU CSSE upstream — see the Data page for details."
+  },
+  {
+    "objectID": "setup.html#quick-sanity-check",
+    "href": "setup.html#quick-sanity-check",
+    "title": "Setup Guide",
+    "section": "7. Quick sanity check",
+    "text": "7. Quick sanity check\nPaste this into the console — it should return a tibble with three waves’ worth of daily case counts.\nlibrary(tidyverse)\nlibrary(here)\n\nread_csv(here(\"data\", \"covid_india_daily.csv\"), show_col_types = FALSE) |&gt;\n  arrange(desc(daily_confirmed)) |&gt;\n  head()\nIf you see the May 2021 peak day at the top of the output, you’re ready."
+  },
+  {
+    "objectID": "setup.html#optional-but-recommended",
+    "href": "setup.html#optional-but-recommended",
+    "title": "Setup Guide",
+    "section": "Optional but recommended",
+    "text": "Optional but recommended\n\nGitHub account — fork the repo, push your activity scripts, share with peers.\nThe codefrag Quarto extension — if you’ll rerender the decks yourself: quarto add mcanouil/quarto-revealjs-codefrag from inside the project root."
+  },
+  {
+    "objectID": "setup.html#need-help",
+    "href": "setup.html#need-help",
+    "title": "Setup Guide",
+    "section": "Need help?",
+    "text": "Need help?\nOpen an issue on GitHub or reach out before the workshop. Setup issues are much harder to fix in the room."
+  },
+  {
+    "objectID": "dataset.html",
+    "href": "dataset.html",
+    "title": "Data",
+    "section": "",
+    "text": "The workshop uses one external dataset — daily COVID-19 case counts for India — built from the Johns Hopkins CSSE repository."
+  },
+  {
+    "objectID": "dataset.html#the-dataset",
+    "href": "dataset.html#the-dataset",
+    "title": "Data",
+    "section": "The dataset",
+    "text": "The dataset\n\n\n\n\n\n\n\nFile\nDescription\n\n\n\n\ndata/covid_india_daily.csv\nOne row per day, 2020-01-22 to 2023-03-09\n\n\n\nColumns:\n\n\n\n\n\n\n\n\nColumn\nType\nDescription\n\n\n\n\ndate\ndate\nCalendar date\n\n\ndaily_confirmed\nint\nNew confirmed cases on date\n\n\ncumulative_confirmed\nint\nRunning total of confirmed cases\n\n\n\n1,143 rows total. Wave 2 (Delta) peaks at 414,188 cases on 2021-05-06."
+  },
+  {
+    "objectID": "dataset.html#quick-look-in-r",
+    "href": "dataset.html#quick-look-in-r",
+    "title": "Data",
+    "section": "Quick look in R",
+    "text": "Quick look in R\nlibrary(tidyverse); library(here)\n\ncovid &lt;- read_csv(here(\"data\", \"covid_india_daily.csv\"), show_col_types = FALSE)\n\n# Top 5 peak days\ncovid |&gt;\n  arrange(desc(daily_confirmed)) |&gt;\n  head(5)\n\n# Visualise the three waves\ncovid |&gt;\n  ggplot(aes(date, daily_confirmed)) +\n  geom_col(fill = \"steelblue\") +\n  scale_y_continuous(labels = scales::comma) +\n  labs(x = NULL, y = \"Daily confirmed cases\",\n       title = \"COVID-19 India — JHU CSSE\")"
+  },
+  {
+    "objectID": "dataset.html#where-it-comes-from",
+    "href": "dataset.html#where-it-comes-from",
+    "title": "Data",
+    "section": "Where it comes from",
+    "text": "Where it comes from\nThe prep script (data/prepare_covid_india_daily.R) does three things:\n\nDownloads the JHU CSSE confirmed-cases global time series.\nFilters to India, pivots from wide (one column per date) to long (one row per date).\nComputes daily counts as differences of the cumulative series, clamping negatives to zero (occasional reporting corrections).\n\nRebuild it any time:\nsource(here::here(\"data\", \"prepare_covid_india_daily.R\"))\nThe output is checked into the repo so participants don’t need an internet connection on workshop day."
+  },
+  {
+    "objectID": "dataset.html#attribution",
+    "href": "dataset.html#attribution",
+    "title": "Data",
+    "section": "Attribution",
+    "text": "Attribution\nThe source data is provided by the Center for Systems Science and Engineering at Johns Hopkins University under CC-BY 4.0. The CSSE archive was retired on 2023-03-10; we use the final snapshot.\nIf you redistribute the derived dataset in your own work, please cite:\n\nDong, E., Du, H., & Gardner, L. (2020). An interactive web-based dashboard to track COVID-19 in real time. The Lancet Infectious Diseases, 20(5), 533-534."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "Asst Prof, Dept of CFM, AIIMS Bibinagar. Public health data science, spatial epidemiology, infectious disease modelling. Trained at LSHTM; member of the R Epidemics Consortium (RECon), Imperial College.\n\n\n\nProfessor, Achutha Menon Centre for Health Science Studies (AMCHSS), SCTIMST Trivandrum. Lead architect of the AMCHSS COVID-19 Dashboard featured in Session 5.\n\n\n\nAssociate Professor, Armed Forces Medical College (AFMC), Pune. Co-author of the Indian COVID-19 reproduction-number analyses that this workshop draws on.\n\n\n\nPublic health researcher and trainer. Workshop co-facilitator."
+  },
+  {
+    "objectID": "about.html#team",
+    "href": "about.html#team",
+    "title": "About",
+    "section": "",
+    "text": "Asst Prof, Dept of CFM, AIIMS Bibinagar. Public health data science, spatial epidemiology, infectious disease modelling. Trained at LSHTM; member of the R Epidemics Consortium (RECon), Imperial College.\n\n\n\nProfessor, Achutha Menon Centre for Health Science Studies (AMCHSS), SCTIMST Trivandrum. Lead architect of the AMCHSS COVID-19 Dashboard featured in Session 5.\n\n\n\nAssociate Professor, Armed Forces Medical College (AFMC), Pune. Co-author of the Indian COVID-19 reproduction-number analyses that this workshop draws on.\n\n\n\nPublic health researcher and trainer. Workshop co-facilitator."
+  },
+  {
+    "objectID": "about.html#acknowledgments",
+    "href": "about.html#acknowledgments",
+    "title": "About",
+    "section": "Acknowledgments",
+    "text": "Acknowledgments\nThis workshop draws on teaching material and ideas shared by:\n\nSebastian Funk (LSHTM) — the Introduction to Infectious Disease Modelling course structure.\nThe Epiverse-TRACE community — the modern Indian / global infectious-disease modelling toolkit in R.\nAllison Horst — open-licensed dplyr illustrations used in Session 2.\nFederica Gazzelloni — the SIR animation idea (R-Ladies Rome 2023).\nAMCHSS / SCTIMST Trivandrum — the live dashboard featured as the closing case study."
+  },
+  {
+    "objectID": "about.html#third-party-assets-attribution",
+    "href": "about.html#third-party-assets-attribution",
+    "title": "About",
+    "section": "Third-party assets — attribution",
+    "text": "Third-party assets — attribution\n\n\n\nAsset\nSource\nLicence\n\n\n\n\nAllison Horst dplyr illustrations (images/tot_dplyr_*.png)\ngithub.com/allisonhorst\nCC-BY 4.0\n\n\nFunk pathogen photos (images/funk/raw/slide_009_*.png)\nS. Funk, LSHTM IDM course\nEducational use, credit\n\n\nCOVID-19 case data (data/covid_india_daily.csv)\nJHU CSSE\nCC-BY 4.0\n\n\nPOLYMOD contact matrix\nsocialmixr::polymod (R-Universe)\nCC-BY 4.0\n\n\noutbreaks::ebola_sim_clean$linelist\noutbreaks R package\nMIT\n\n\ncodefrag Quarto extension\nmcanouil/quarto-revealjs-codefrag\nMIT"
+  },
+  {
+    "objectID": "about.html#licence",
+    "href": "about.html#licence",
+    "title": "About",
+    "section": "Licence",
+    "text": "Licence\n\nCode in this repository (*.R, *.qmd, _quarto.yml, prep scripts) — MIT License.\nSlide content, prose, and original images — CC-BY-SA 4.0. Reuse freely with attribution.\nThird-party assets retain their original licences — see the table above."
+  },
+  {
+    "objectID": "about.html#contact",
+    "href": "about.html#contact",
+    "title": "About",
+    "section": "Contact",
+    "text": "Contact\nFor questions, errors, or to contribute back, open an issue on GitHub or email Dr. Arun Mitra Peddireddy."
+  },
+  {
+    "objectID": "02_just_enough_r.html#why-r-for-idm",
+    "href": "02_just_enough_r.html#why-r-for-idm",
+    "title": "Just Enough R for IDM",
+    "section": "Why R for IDM?",
+    "text": "Why R for IDM?\n\nFree and open-source — everywhere, no licence fees.\nThe IDM ecosystem lives in R — deSolve, EpiEstim, epidemics, EpiNow2, incidence2, outbreaks, socialmixr.\nReproducible — your script is your method. Re-run it in five years and get the same numbers.\nOne language for the whole pipeline — clean → analyse → model → plot → publish.\n\n\nSet the why. Don’t compare to Python — that’s a distraction."
+  },
+  {
+    "objectID": "02_just_enough_r.html#rstudio-in-4-panes",
+    "href": "02_just_enough_r.html#rstudio-in-4-panes",
+    "title": "Just Enough R for IDM",
+    "section": "RStudio in 4 Panes",
+    "text": "RStudio in 4 Panes\n\n\n\nPane\nWhat it does\n\n\n\n\nSource\nYour script — write code, save it\n\n\nConsole\nR runs here. Output prints here\n\n\nEnvironment\nObjects R knows about right now\n\n\nPlots / Help / Files\nPlots, ?docs, your project files\n\n\n\nRun a line: Ctrl/Cmd + Enter.\n\nCommon errors:\n\n“object not found” → you didn’t run the line that creates it.\n“could not find function” → package not loaded."
+  },
+  {
+    "objectID": "02_just_enough_r.html#assignment-and-vectors",
+    "href": "02_just_enough_r.html#assignment-and-vectors",
+    "title": "Just Enough R for IDM",
+    "section": "Assignment and Vectors",
+    "text": "Assignment and Vectors\n\nx &lt;- 5                          # assign 5 to x\nx                               # print x  →  [1] 5\n\nages &lt;- c(25, 30, 35, 40)       # a numeric vector\nmean(ages)                      # → 32.5\nlength(ages)                    # → 4\n\nUse &lt;- for assignment. = works too but &lt;- is the convention. c() combines values into a vector — the smallest unit of data in R."
+  },
+  {
+    "objectID": "02_just_enough_r.html#functions-and-arguments",
+    "href": "02_just_enough_r.html#functions-and-arguments",
+    "title": "Just Enough R for IDM",
+    "section": "Functions and Arguments",
+    "text": "Functions and Arguments\n\nmean(ages)                      # one positional argument\nmean(x = ages, na.rm = TRUE)    # named arguments\n\n# Type ?mean in the console for help\n?mean\n\nArguments can be positional (in order) or named (name = value). Named beats positional for clarity — always name the second argument onward."
+  },
+  {
+    "objectID": "02_just_enough_r.html#data-types",
+    "href": "02_just_enough_r.html#data-types",
+    "title": "Just Enough R for IDM",
+    "section": "Data Types",
+    "text": "Data Types\n\nis.numeric(3.14)                # TRUE\nis.character(\"Kerala\")          # TRUE\nis.logical(TRUE)                # TRUE\n\n# Vectors: same type only\nc(1, 2, 3)                      # numeric\nc(\"Kerala\", \"TN\", \"AP\")         # character\nc(TRUE, FALSE, TRUE)            # logical\n\n# Mixed types coerce to character\nc(1, \"Kerala\", TRUE)            # → \"1\" \"Kerala\" \"TRUE\"\n\nThe four types you’ll meet most: numeric · character · logical · factor."
+  },
+  {
+    "objectID": "02_just_enough_r.html#loading-packages",
+    "href": "02_just_enough_r.html#loading-packages",
+    "title": "Just Enough R for IDM",
+    "section": "Loading Packages",
+    "text": "Loading Packages\n\ninstall.packages(\"tidyverse\")   # one-time, on a new machine\n\nlibrary(tidyverse)              # every R session, before use\nlibrary(EpiEstim)\nlibrary(here)\n\ninstall.packages() is once. library() is every session. If you see “could not find function”, you forgot the library() call."
+  },
+  {
+    "objectID": "02_just_enough_r.html#subsetting-basics",
+    "href": "02_just_enough_r.html#subsetting-basics",
+    "title": "Just Enough R for IDM",
+    "section": "Subsetting Basics",
+    "text": "Subsetting Basics\n\nages &lt;- c(25, 30, 35, 40)\n\nages[1]                         # first element            → 25\nages[c(2, 4)]                   # multiple elements        → 30, 40\nages[ages &gt; 30]                 # logical subset           → 35, 40\n\n# Data frames: $ for columns, [] for rows / cols\nmtcars$mpg                      # the mpg column\nmtcars[1, ]                     # first row, all columns\nmtcars[, \"mpg\"]                 # all rows, mpg column"
+  },
+  {
+    "objectID": "02_just_enough_r.html#tidy-data",
+    "href": "02_just_enough_r.html#tidy-data",
+    "title": "Just Enough R for IDM",
+    "section": "Tidy Data",
+    "text": "Tidy Data\n\n\nThree rules:\n\nEach variable in its own column.\nEach observation in its own row.\nEach value in its own cell.\n\nA line list is tidy data: one row per case, one column per attribute.\n\n\n\n\ncase_id\nonset\ngender\n\n\n\n\n1\n2014-04-01\nF\n\n\n2\n2014-04-03\nM\n\n\n3\n2014-04-04\nF\n\n\n\n\n\nWickham, H. (2014). Tidy Data. JSS. The whole tidyverse is built on this."
+  },
+  {
+    "objectID": "02_just_enough_r.html#the-pipe-operator",
+    "href": "02_just_enough_r.html#the-pipe-operator",
+    "title": "Just Enough R for IDM",
+    "section": "The Pipe Operator",
+    "text": "The Pipe Operator\n\nRead |&gt; out loud as “and then…”. x |&gt; f() is the same as f(x). x |&gt; f() |&gt; g() is g(f(x)).\n\nWe use the native pipe |&gt; (R 4.1+). The older %&gt;% from magrittr behaves almost identically."
+  },
+  {
+    "objectID": "02_just_enough_r.html#reading-data",
+    "href": "02_just_enough_r.html#reading-data",
+    "title": "Just Enough R for IDM",
+    "section": "Reading Data",
+    "text": "Reading Data\n\nlibrary(readr)\nlibrary(here)\n\ncovid &lt;- read_csv(here(\"data\", \"covid_india_daily.csv\"))\n\n\nread_csv() from readr is faster and tidier than base R’s read.csv() — it returns a tibble.\nhere() builds project-relative paths. Use it instead of absolute paths — your code will work on any machine."
+  },
+  {
+    "objectID": "02_just_enough_r.html#five-verbs-cover-90-of-data-work",
+    "href": "02_just_enough_r.html#five-verbs-cover-90-of-data-work",
+    "title": "Just Enough R for IDM",
+    "section": "Five Verbs Cover 90% of Data Work",
+    "text": "Five Verbs Cover 90% of Data Work\n\n\n\nVerb\nWhat it does\n\n\n\n\nfilter()\nKeep some rows\n\n\nselect()\nKeep some columns\n\n\nmutate()\nMake new columns\n\n\narrange()\nReorder rows\n\n\ngroup_by() + summarise()\nCollapse rows by group\n\n\n\nCombine with the pipe |&gt; for readable, sequential transformations."
+  },
+  {
+    "objectID": "02_just_enough_r.html#filter-function---keeps-the-rows",
+    "href": "02_just_enough_r.html#filter-function---keeps-the-rows",
+    "title": "Just Enough R for IDM",
+    "section": "filter() function - Keeps the Rows",
+    "text": "filter() function - Keeps the Rows\n\n\n\n\n\ncovid |&gt;\n  filter(daily_confirmed &gt; 100000)\n\ncovid |&gt;\n  filter(date &gt;= \"2021-03-01\",\n         date &lt;= \"2021-06-30\")\n\nMultiple conditions joined with comma = AND. Use | for OR."
+  },
+  {
+    "objectID": "02_just_enough_r.html#logical-operators-in-filter",
+    "href": "02_just_enough_r.html#logical-operators-in-filter",
+    "title": "Just Enough R for IDM",
+    "section": "Logical Operators in filter()",
+    "text": "Logical Operators in filter()\n\n\n\n\n\ncovid |&gt;\n  filter(daily_confirmed &gt; 100000)\n\ncovid |&gt;\n  filter(date == \"2021-05-06\")\n\ncovid |&gt;\n  filter(!is.na(daily_confirmed))\n\ncovid |&gt;\n  filter(date &gt;= \"2021-03-01\" &\n         date &lt;= \"2021-06-30\")\n\n\n\n!is.na() is the everyday “drop missing” idiom. Worth a 30-second pause."
+  },
+  {
+    "objectID": "02_just_enough_r.html#select-function-keeps-the-columns",
+    "href": "02_just_enough_r.html#select-function-keeps-the-columns",
+    "title": "Just Enough R for IDM",
+    "section": "select() function: Keeps the Columns",
+    "text": "select() function: Keeps the Columns\n\ncovid |&gt; select(date, daily_confirmed)        # keep two columns\n\ncovid |&gt; select(-cumulative_confirmed)        # drop one column\n\ncovid |&gt; select(starts_with(\"daily\"))         # tidy-select helpers\n\nstarts_with(), ends_with(), contains(), matches() (regex) all work inside select()."
+  },
+  {
+    "objectID": "02_just_enough_r.html#mutate-function-makes-new-columns",
+    "href": "02_just_enough_r.html#mutate-function-makes-new-columns",
+    "title": "Just Enough R for IDM",
+    "section": "mutate() function: Makes New Columns",
+    "text": "mutate() function: Makes New Columns\n\n\n\n\nIllustration © Allison Horst, CC-BY 4.0.\n\n\n\ncovid |&gt;\n  mutate(\n    week  = lubridate::floor_date(date, \"week\"),\n    cases_per_lakh = daily_confirmed / 13800\n  )\n\nmutate() creates new columns or overwrites existing ones."
+  },
+  {
+    "objectID": "02_just_enough_r.html#arrange-reorder-rows",
+    "href": "02_just_enough_r.html#arrange-reorder-rows",
+    "title": "Just Enough R for IDM",
+    "section": "arrange() — Reorder Rows",
+    "text": "arrange() — Reorder Rows\n\ncovid |&gt; arrange(daily_confirmed)              # ascending\n\ncovid |&gt; arrange(desc(daily_confirmed))        # descending — peak day first\n\ncovid |&gt; arrange(date)                         # chronological\n\nDefault is ascending. Wrap with desc() for descending."
+  },
+  {
+    "objectID": "02_just_enough_r.html#group_by-summarise-collapse-by-group",
+    "href": "02_just_enough_r.html#group_by-summarise-collapse-by-group",
+    "title": "Just Enough R for IDM",
+    "section": "group_by() + summarise() — Collapse by Group",
+    "text": "group_by() + summarise() — Collapse by Group\n\ncovid |&gt;\n  mutate(year = lubridate::year(date)) |&gt;\n  group_by(year) |&gt;\n  summarise(\n    total_cases = sum(daily_confirmed, na.rm = TRUE),\n    peak_day    = max(daily_confirmed, na.rm = TRUE),\n    n_days      = n()\n  )\n\nThe most powerful pattern in dplyr. Group, then collapse. n() counts rows in the current group."
+  },
+  {
+    "objectID": "02_just_enough_r.html#the-grammar-of-graphics",
+    "href": "02_just_enough_r.html#the-grammar-of-graphics",
+    "title": "Just Enough R for IDM",
+    "section": "The Grammar of Graphics",
+    "text": "The Grammar of Graphics\nA plot is built in layers:\n\nData: the tibble you’re plotting.\nAesthetics: aes() maps columns to position, colour, size.\nGeoms: the visual shapes: geom_line, geom_col, geom_point.\nScales: how to translate values to pixels (axes, colour palettes).\nFacets: small multiples by a categorical variable."
+  },
+  {
+    "objectID": "02_just_enough_r.html#a-plot-built-up",
+    "href": "02_just_enough_r.html#a-plot-built-up",
+    "title": "Just Enough R for IDM",
+    "section": "A Plot, Built Up",
+    "text": "A Plot, Built Up\n\n1covid |&gt;\n2  ggplot(aes(x = date, y = daily_confirmed)) +\n3  geom_col(fill = \"steelblue\") +\n4  scale_y_continuous(labels = scales::comma) +\n5  facet_wrap(~ lubridate::year(date), scales = \"free_y\") +\n6  labs(x = NULL, y = \"Daily confirmed\",\n       title = \"COVID-19 India — in waves\")\n\n\n1\n\nThe data — must be a tibble or data frame.\n\n2\n\naes() maps date → x-axis, daily_confirmed → y-axis.\n\n3\n\nBars, filled steel blue.\n\n4\n\nFormat y-axis with thousand separators.\n\n5\n\nOne panel per year. free_y lets each year find its own scale.\n\n6\n\nLabels and title."
+  },
+  {
+    "objectID": "02_just_enough_r.html#the-plot",
+    "href": "02_just_enough_r.html#the-plot",
+    "title": "Just Enough R for IDM",
+    "section": "The Plot",
+    "text": "The Plot\n\ncovid |&gt;\n  ggplot(aes(x = date, y = daily_confirmed)) +\n  geom_col(fill = \"steelblue\") +\n  scale_y_continuous(labels = scales::comma) +\n  facet_wrap(~ lubridate::year(date), scales = \"free_y\") +\n  labs(x = NULL, y = \"Daily confirmed\",\n       title = \"COVID-19 India — three waves\")"
+  },
+  {
+    "objectID": "02_just_enough_r.html#common-geoms",
+    "href": "02_just_enough_r.html#common-geoms",
+    "title": "Just Enough R for IDM",
+    "section": "Common Geoms",
+    "text": "Common Geoms\n\n\n\nGeom\nUse for…\n\n\n\n\ngeom_line()\nTrends over time\n\n\ngeom_col()\nBars (counts already computed)\n\n\ngeom_bar()\nBars (compute counts from raw data)\n\n\ngeom_point()\nScatter plots\n\n\ngeom_histogram()\nDistribution of one numeric variable\n\n\ngeom_boxplot()\nDistribution by group\n\n\ngeom_smooth()\nTrend line through points"
+  },
+  {
+    "objectID": "02_just_enough_r.html#the-line-list-plot-pipeline",
+    "href": "02_just_enough_r.html#the-line-list-plot-pipeline",
+    "title": "Just Enough R for IDM",
+    "section": "The Line List → Plot Pipeline",
+    "text": "The Line List → Plot Pipeline\n\nlibrary(tidyverse)\nlibrary(outbreaks)\nlibrary(lubridate)\n\nll &lt;- outbreaks::ebola_sim_clean$linelist |&gt; as_tibble()\n\nll |&gt;\n  filter(!is.na(date_of_onset)) |&gt;\n  mutate(month = floor_date(date_of_onset, \"month\")) |&gt;\n  group_by(month, gender) |&gt;\n  summarise(cases = n(), .groups = \"drop\") |&gt;\n  ggplot(aes(month, cases, fill = gender)) +\n  geom_col(position = \"dodge\") +\n  labs(x = \"Month\", y = \"Cases\",\n       title = \"Ebola simulated outbreak — monthly cases by gender\")\n\n\nFive verbs. One pipeline. Read it top-to-bottom as English."
+  },
+  {
+    "objectID": "02_just_enough_r.html#the-epi-way-two-lines-same-plot",
+    "href": "02_just_enough_r.html#the-epi-way-two-lines-same-plot",
+    "title": "Just Enough R for IDM",
+    "section": "The “Epi Way” — Two Lines, Same Plot",
+    "text": "The “Epi Way” — Two Lines, Same Plot\n\nlibrary(incidence2)\n\ninc &lt;- incidence(ll, date_index = \"date_of_onset\",\n                 interval = \"week\", groups = \"gender\")\nplot(inc)\n\n\nSame idea — three lines instead of seven. Epi packages give you tidy shortcuts for common patterns. Bridge to Rt in Foundations."
+  },
+  {
+    "objectID": "02_just_enough_r.html#activity-try-it-yourself",
+    "href": "02_just_enough_r.html#activity-try-it-yourself",
+    "title": "Just Enough R for IDM",
+    "section": "Activity — Try It Yourself",
+    "text": "Activity — Try It Yourself\nIn your project, open activity_02_pipeline.R:\n\nChange the grouping in the Ebola pipeline from gender to hospital.\nSwitch the interval from \"month\" to \"week\".\nChange the geom from geom_col to geom_line.\nAdd a geom_smooth() layer to overlay a trend.\n\n\n5 minutes. Pair anyone struggling with a neighbour."
+  },
+  {
+    "objectID": "02_just_enough_r.html#covid-19-india-daily-cases",
+    "href": "02_just_enough_r.html#covid-19-india-daily-cases",
+    "title": "Just Enough R for IDM",
+    "section": "COVID-19 India — Daily Cases",
+    "text": "COVID-19 India — Daily Cases\n\nlibrary(tidyverse); library(EpiEstim); library(here)\n\ncovid_india &lt;- read_csv(here(\"data\", \"covid_india_daily.csv\"),\n                        show_col_types = FALSE) |&gt;\n  transmute(dates = as.Date(date),\n            I     = as.integer(daily_confirmed)) |&gt;\n  arrange(dates) |&gt;\n  filter(!is.na(I))\n\ncovid_india |&gt;\n  ggplot(aes(dates, I)) +\n  geom_col(fill = \"steelblue\") +\n  scale_y_continuous(labels = scales::comma) +\n  labs(x = NULL, y = \"Daily confirmed cases\",\n       title = \"COVID-19 India — JHU CSSE, 2020-01 to 2023-03\")\n\n\n\nThree waves: W1 mid-2020 → Feb 2021; W2 Mar–Jun 2021 (Delta, peak 414k on 2021-05-06); W3 Dec 2021 – Feb 2022 (Omicron)."
+  },
+  {
+    "objectID": "02_just_enough_r.html#estimate-rt-nationally",
+    "href": "02_just_enough_r.html#estimate-rt-nationally",
+    "title": "Just Enough R for IDM",
+    "section": "Estimate Rt Nationally",
+    "text": "Estimate Rt Nationally\n\n# SARS-CoV-2 serial interval (Nishiura et al. 2020): mean 4.7, sd 2.9\nrt_fit &lt;- estimate_R(\n1  incid  = covid_india,\n2  method = \"parametric_si\",\n3  config = make_config(list(mean_si = 4.7, std_si = 2.9))\n)\n\n4plot(rt_fit, \"R\")\n\n\n1\n\nThe data: a tibble with dates and I (daily incidence). One row per day.\n\n2\n\nparametric_si — serial interval is a known parametric distribution (gamma).\n\n3\n\nMean and SD of the SI in days. Change these and Rt shifts.\n\n4\n\nPlot just the Rt panel. plot(rt_fit) shows all three.\n\n\n\n\n\nAbove 1 → wave growing. Below 1 → wave shrinking. Always read the credible interval."
+  },
+  {
+    "objectID": "02_just_enough_r.html#r0-from-the-early-wave-growth-rate",
+    "href": "02_just_enough_r.html#r0-from-the-early-wave-growth-rate",
+    "title": "Just Enough R for IDM",
+    "section": "R0 from the Early-Wave Growth Rate",
+    "text": "R0 from the Early-Wave Growth Rate\nFor a quick R0 from the start of a wave, fit a log-linear model and convert:\n\nwave2_start &lt;- covid_india |&gt;\n  filter(dates &gt;= as.Date(\"2021-03-01\"),\n1         dates &lt;= as.Date(\"2021-03-21\"))\n\n2fit &lt;- glm(I ~ as.numeric(dates), data = wave2_start, family = poisson())\n3r   &lt;- coef(fit)[2]\n4Tg  &lt;- 4.7\n5R0_wave2 &lt;- 1 + r * Tg\nR0_wave2\n\n\n1\n\nFirst 21 days of Wave 2 — Delta growing exponentially before susceptibles deplete.\n\n2\n\nPoisson GLM with a log link. The slope is the log of the daily growth multiplier.\n\n3\n\nPull the slope out as a scalar.\n\n4\n\nGeneration time mean (days).\n\n5\n\nWallinga & Lipsitch (2007): in the early phase, R0 ≈ 1 + r · Tg."
+  },
+  {
+    "objectID": "02_just_enough_r.html#activity-rt-across-three-waves",
+    "href": "02_just_enough_r.html#activity-rt-across-three-waves",
+    "title": "Just Enough R for IDM",
+    "section": "Activity — Rt Across Three Waves",
+    "text": "Activity — Rt Across Three Waves\nOpen activity_02_waves.R. Three teams, one wave each:\n\n\n\nTeam\nWave\nWindow (illustrative)\n\n\n\n\n1\nWave 1\n2020-06-01 → 2020-12-31\n\n\n2\nWave 2\n2021-03-01 → 2021-06-30\n\n\n3\nWave 3\n2021-12-15 → 2022-02-28\n\n\n\nFor your wave:\n\nFilter the data to the window.\nRun estimate_R() with the SARS-CoV-2 serial interval.\nNote the peak Rt, when it crossed 1, and the width of the credible interval.\nOne sentence: what does this tell you about that wave?\n\n\nIf you can read it, you can write it."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#the-counterfactual",
+    "href": "04_scenario_modelling.html#the-counterfactual",
+    "title": "Scenario Modelling",
+    "section": "The Counterfactual",
+    "text": "The Counterfactual\n\nWhat would have happened without lockdown / masks / vaccines?\n\nWe can never observe both as there is only one history.\nModels are the only way to answer counterfactual questions.\nBuild a baseline. Build an alternative.\nThe comparison is the answer.\n\nTrajectory alone is not the result. Difference is the result."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#three-intervention-types",
+    "href": "04_scenario_modelling.html#three-intervention-types",
+    "title": "Scenario Modelling",
+    "section": "Three Intervention Types",
+    "text": "Three Intervention Types"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#a-hypothetical-covid-like-wave",
+    "href": "04_scenario_modelling.html#a-hypothetical-covid-like-wave",
+    "title": "Scenario Modelling",
+    "section": "A Hypothetical COVID-Like Wave",
+    "text": "A Hypothetical COVID-Like Wave\nA pathogen seeds an age-structured population (POLYMOD survey: 0–20, 20–40, 40+). COVID-like timescales, with one-in-a-million initially infectious in each age band.\n\n\n\n\n\n\n\n\nParameter\nValue\nMeaning\n\n\n\n\ntransmission_rate\n0.3\nper-contact infection rate\n\n\ninfectiousness_rate\n1/5\nrate of E → I (5-day latent period)\n\n\nrecovery_rate\n1/7\nrate of I → R (7-day infectious period)\n\n\nPopulation\nPOLYMOD demography (3 age groups)\nfrom socialmixr::polymod\n\n\ntime_end\n365 days\none-year horizon\n\n\n\nThe question: how do three interventions compare against doing nothing?"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#building-the-population",
+    "href": "04_scenario_modelling.html#building-the-population",
+    "title": "Scenario Modelling",
+    "section": "Building the Population",
+    "text": "Building the Population\n\nlibrary(epidemics); library(socialmixr); library(tidyverse)\n\n1contact_data &lt;- contact_matrix(\n  socialmixr::polymod,\n  age_limits = c(0, 20, 40),\n  symmetric  = TRUE\n)\n\n2contact_matrix    &lt;- t(contact_data[[\"matrix\"]])\ndemography_vector &lt;- contact_data[[\"demography\"]][[\"population\"]]\nnames(demography_vector) &lt;- rownames(contact_matrix)\n\n3initial_i &lt;- 1e-6\ninit_row  &lt;- c(S = 1 - initial_i, E = 0, I = initial_i, R = 0, V = 0)\ninitial_conditions &lt;- rbind(init_row, init_row, init_row)\nrownames(initial_conditions) &lt;- rownames(contact_matrix)\n\n4uk_population &lt;- population(\n  name               = \"Population\",\n  contact_matrix     = contact_matrix,\n  demography_vector  = demography_vector,\n  initial_conditions = initial_conditions\n)\n\n\n1\n\nPOLYMOD survey of who-meets-whom — used to build a contact matrix per day, per age group.\n\n2\n\nThree age groups → a 3 × 3 contact matrix C, plus a demography vector with one population count per group.\n\n3\n\nInitial conditions as proportions per age group (epidemics expects rows summing to 1).\n\n4\n\nThe population object bundles structure + demography + starting state."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#a-helper-to-run-scenarios",
+    "href": "04_scenario_modelling.html#a-helper-to-run-scenarios",
+    "title": "Scenario Modelling",
+    "section": "A Helper To Run Scenarios",
+    "text": "A Helper To Run Scenarios\n\nrun_scenario &lt;- function(npi = NULL, vac = NULL, t_end = 365) {\n\n1  args &lt;- list(\n    population          = uk_population,\n    transmission_rate   = 0.3,                # COVID-like\n    infectiousness_rate = 1 / 5,\n    recovery_rate       = 1 / 7,\n    time_end            = t_end,\n    increment           = 1.0\n  )\n\n2  if (!is.null(npi)) args$intervention &lt;- list(contacts = npi)\n  if (!is.null(vac)) args$vaccination  &lt;- vac\n\n  do.call(model_default, args)\n}\n\n\n1\n\nBaseline arguments — same for every scenario.\n\n2\n\nOptional levers — pass an intervention() object for an NPI, a vaccination() object for a campaign, or both. No arguments → counterfactual."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#scenario-0-counterfactual-do-nothing",
+    "href": "04_scenario_modelling.html#scenario-0-counterfactual-do-nothing",
+    "title": "Scenario Modelling",
+    "section": "Scenario 0 — Counterfactual (Do Nothing)",
+    "text": "Scenario 0 — Counterfactual (Do Nothing)\n\ncounterfactual &lt;- run_scenario()"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#scenario-a-60-day-lockdown-npi",
+    "href": "04_scenario_modelling.html#scenario-a-60-day-lockdown-npi",
+    "title": "Scenario Modelling",
+    "section": "Scenario A — 60-Day Lockdown (NPI)",
+    "text": "Scenario A — 60-Day Lockdown (NPI)\n\nlockdown_60 &lt;- intervention(\n  name       = \"Lockdown\",\n  type       = \"contacts\",\n1  reduction  = matrix(c(0.5, 0.5, 0.3)),\n  time_begin = 30,\n2  time_end   = 90\n)\n\nscenario_npi &lt;- run_scenario(npi = lockdown_60)\n\n\n1\n\nReduction per age group: kids 50%, working-age 50%, older 30%. Older population is already isolating, so a smaller marginal change.\n\n2\n\nThe intervention is on for 60 days; β returns to baseline on day 91."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#scenario-a-plot",
+    "href": "04_scenario_modelling.html#scenario-a-plot",
+    "title": "Scenario Modelling",
+    "section": "Scenario A — Plot",
+    "text": "Scenario A — Plot"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#scenario-b-vaccination-campaign",
+    "href": "04_scenario_modelling.html#scenario-b-vaccination-campaign",
+    "title": "Scenario Modelling",
+    "section": "Scenario B — Vaccination Campaign",
+    "text": "Scenario B — Vaccination Campaign\n\ncampaign &lt;- vaccination(\n  name        = \"Campaign\",\n1  time_begin  = matrix(60,    nrow = 3),\n2  time_end    = matrix(360,   nrow = 3),\n3  nu          = matrix(0.005, nrow = 3)\n)\n\nscenario_vac &lt;- run_scenario(vac = campaign)\n\n\n1\n\nStart day per age group. Matrix shape n_age × n_doses (here 3 × 1). Same start day for everyone here.\n\n2\n\nEnd day per age group. A 300-day campaign window.\n\n3\n\nDaily vaccination rate — fraction of remaining S moved to V per day. 0.5%/day."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#scenario-b-plot",
+    "href": "04_scenario_modelling.html#scenario-b-plot",
+    "title": "Scenario Modelling",
+    "section": "Scenario B — Plot",
+    "text": "Scenario B — Plot"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#scenario-c-combined-npi-vaccination",
+    "href": "04_scenario_modelling.html#scenario-c-combined-npi-vaccination",
+    "title": "Scenario Modelling",
+    "section": "Scenario C — Combined (NPI + Vaccination)",
+    "text": "Scenario C — Combined (NPI + Vaccination)\n\nscenario_combined &lt;- run_scenario(npi = lockdown_60, vac = campaign)"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#all-four-on-one-plot",
+    "href": "04_scenario_modelling.html#all-four-on-one-plot",
+    "title": "Scenario Modelling",
+    "section": "All Four on One Plot",
+    "text": "All Four on One Plot"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#outcomes",
+    "href": "04_scenario_modelling.html#outcomes",
+    "title": "Scenario Modelling",
+    "section": "Outcomes",
+    "text": "Outcomes\n\n\n\n\n\n\n\n\n\n\n\n\n\nscenario\nPeak day\nPeak infectious\nFinal size\nVaccinated\nCases averted\n\n\n\n\n0. Counterfactual\n182\n25,165,113\n215,180,509\n0\n0\n\n\n1. NPI only\n264\n25,166,324\n214,756,837\n0\n423,672\n\n\n2. Vaccination only\n162\n879,869\n10,265,527\n261,494,441\n204,914,981\n\n\n3. Combined\n168\n2,346\n37,843\n271,722,125\n215,142,666\n\n\n\n\n\n\nNPIs buy time.\n\n\nVaccination prevents.\n\n\nCombined wins."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#hands-on",
+    "href": "04_scenario_modelling.html#hands-on",
+    "title": "Scenario Modelling",
+    "section": "Hands-on",
+    "text": "Hands-on\nOpen scripts/scenario_explorer.R. Setup loads the population + helpers; pick one task per pair.\n\n\n\n\n\n\n\nPair\nTask\n\n\n\n\nA\nWeak lockdown — change reduction to c(0.3, 0.3, 0.2). Does the wave still flatten?\n\n\nB\nLong lockdown — extend to days 30–150. Smaller rebound?\n\n\nC\nLate lockdown — start day 60 instead of day 30. How does peak day shift?\n\n\nD\nEarlier vaccination — start day 30 instead of day 60. Final size change?\n\n\nE\nSlow vaccination — nu = 0.001 instead of 0.005. Still useful?\n\n\nF\nVaccinate only — drop the NPI, but double nu to 0.01. Trade-off?\n\n\n\nFor your tweak: predict first, then run, then write down peak day / peak I / final size."
+  },
+  {
+    "objectID": "04_scenario_modelling.html#reveal-pair-results",
+    "href": "04_scenario_modelling.html#reveal-pair-results",
+    "title": "Scenario Modelling",
+    "section": "Reveal — Pair Results",
+    "text": "Reveal — Pair Results"
+  },
+  {
+    "objectID": "04_scenario_modelling.html#closing",
+    "href": "04_scenario_modelling.html#closing",
+    "title": "Scenario Modelling",
+    "section": "Closing",
+    "text": "Closing\n\nA trajectory tells you what could happen. A counterfactual tells you what to do.\n\n\n\nQuestions?"
+  }
+]
