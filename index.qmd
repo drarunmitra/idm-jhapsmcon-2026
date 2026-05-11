@@ -73,5 +73,5 @@ Guided walkthrough of the AMCHSS COVID-19 dashboard — every panel mapped to a 
 
 ## Team
 
-Dr. Arun Mitra Peddireddy (lead) · Prof. Biju Soman · Dr. Gurpreet Singh · Dr. Adrija Roy.
+Dr. Arun Mitra Peddireddy · Prof. Biju Soman · Dr. Adrija Roy.
 See the [About page](about.qmd) for full credits and attribution.
