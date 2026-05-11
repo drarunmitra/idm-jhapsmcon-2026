@@ -1,0 +1,77 @@
+---
+title: "Infectious Disease Modelling in R"
+subtitle: "JHAPSMCON 2026 · 4ᵗʰ Annual Jharkhand State Conference of IAPSM"
+date: "2026-05-09"
+format: html
+toc: false
+---
+
+A one-day, beginner-friendly workshop. By 5 pm you will be able to **read every line of code** behind a working R~t~ analysis — and recognise every panel in a real public-health dashboard.
+
+## Quick start {.unnumbered}
+
+::: {.callout-tip icon=false}
+## New here?
+
+1. Open the **[Setup guide](setup.qmd)** and install R, RStudio, and the workshop packages (`source("setup.R")`).
+2. Skim the **[Schedule](#schedule)** below.
+3. The night before the workshop, run the [data prep script](dataset.qmd) so the COVID-19 India dataset is ready locally.
+:::
+
+## Schedule {#schedule}
+
+| Time        | Session                                                              |
+|-------------|----------------------------------------------------------------------|
+| 10:00–11:00 | [**1. Foundations**](01_foundations.qmd) — Why model · R~0~ / R~t~  |
+| 11:00–11:15 | ☕ Tea                                                                |
+| 11:15–12:15 | [**2. Just Enough R**](02_just_enough_r.qmd) — basics · tidyverse · ggplot · applied R~t~ |
+| 12:15–13:15 | [**3. Compartmental Models**](03_compartmental_models.qmd) — SIR / SEIR + extensions |
+| 13:15–14:15 | 🥗 Lunch                                                              |
+| 14:15–15:15 | [**4. Scenario Modelling**](04_scenario_modelling.qmd) — counterfactual + 3 interventions |
+| 15:15–15:30 | ☕ Tea                                                                |
+| 15:30–16:30 | [**5. AMCHSS COVID-19 Dashboard**](05_dashboard.qmd) — guided walkthrough |
+| 16:30–17:00 | Q&A and Wrap-up                                                      |
+
+## Sessions
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+### [1 · Foundations](01_foundations.qmd)
+Why model? R~0~ ranking. R~t~ in one line. Forward vs. inverse problems.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### [2 · Just Enough R](02_just_enough_r.qmd)
+R basics, tidyverse, ggplot2, then estimate R~t~ from real Indian COVID-19 data.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### [3 · Compartmental Models](03_compartmental_models.qmd)
+SIR with `deSolve`, SEIR, extensions (SEIRS, SEIRD), four-disease group work.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### [4 · Scenario Modelling](04_scenario_modelling.qmd)
+A COVID-like scenario with three interventions (NPI, vaccination, combined) vs. counterfactual, using `epidemics`.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### [5 · AMCHSS Dashboard](05_dashboard.qmd)
+Guided walkthrough of the AMCHSS COVID-19 dashboard — every panel mapped to a concept from the day.
+:::
+
+:::
+
+## What you'll take home
+
+- A working R + RStudio setup for infectious disease modelling.
+- Six rendered slide decks, downloadable.
+- A library of hands-on R scripts you can adapt to your own data.
+- The COVID-19 India daily-case dataset (JHU CSSE), pre-cleaned for analysis.
+- A printed cheat-sheet covering tidyverse verbs, the line-list pipeline, and the "which tool when?" decision aid.
+
+## Team
+
+Dr. Arun Mitra Peddireddy (lead) · Prof. Biju Soman · Dr. Gurpreet Singh · Dr. Adrija Roy.
+See the [About page](about.qmd) for full credits and attribution.

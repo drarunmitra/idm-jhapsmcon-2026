@@ -1,0 +1,43 @@
+---
+title: "Hands-on Code"
+date-modified: today
+format: html
+---
+
+Every R script used in the hands-on portions of the workshop. Each is self-contained — open it in RStudio, run line-by-line.
+
+## Group scripts — Compartmental Models (Session 3)
+
+Four groups, four diseases. Each script runs an SIR model, prompts you to predict peak time and final size *before* plotting, and includes a bonus SEIR extension.
+
+| Script | Disease       | R~0~ | D (days) |
+|--------|---------------|-----:|---------:|
+| [`scripts/group1.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/group1.R) | Measles-like  | 15   | 8        |
+| [`scripts/group2.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/group2.R) | Flu-like      | 1.5  | 4        |
+| [`scripts/group3.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/group3.R) | Ebola-like    | 2    | 10       |
+| [`scripts/group4.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/group4.R) | COVID-19-like | 3    | 7        |
+
+## Scenario explorer (Session 4)
+
+[`scripts/scenario_explorer.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/scenario_explorer.R) — a COVID-like SEIR with intervention switches (NPI + vaccination). Six pair tasks pre-defined (A–F); run the SETUP block once, then jump to your pair's task.
+
+## Builder scripts (run-once, produces cached assets)
+
+- [`scripts/build_sir_animation.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/build_sir_animation.R) — renders `images/sir_animation.gif` for the SIR-trajectory hook slide.
+- [`scripts/build_stochastic_seir.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/scripts/build_stochastic_seir.R) — renders `images/stochastic_seir_trajectories.png` (100 tau-leap trajectories at R~0~ = 1.5).
+
+## Data preparation
+
+- [`data/prepare_covid_india_daily.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/data/prepare_covid_india_daily.R) — downloads JHU CSSE confirmed cases, extracts the India series, derives daily counts, writes `data/covid_india_daily.csv`.
+
+## Workshop setup
+
+- [`setup.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/setup.R) — one-shot installer for every package used across all five sessions. See the [Setup guide](setup.qmd).
+
+## How to download a single script
+
+On any GitHub file page, click the **Raw** button and save the page (Cmd/Ctrl + S). Or use `curl`:
+
+```bash
+curl -O https://raw.githubusercontent.com/drarunmitra/idm-jhapsmcon-2026/main/scripts/group1.R
+```

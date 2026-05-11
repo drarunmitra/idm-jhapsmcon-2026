@@ -1,0 +1,91 @@
+---
+title: "Setup Guide"
+date-modified: today
+format: html
+---
+
+Do this **the day before the workshop**. If anything goes wrong, fixes are easier in your own time than in a packed conference room with patchy wifi.
+
+## 1. Install R
+
+[Download R](https://cran.r-project.org/) (version 4.1 or later — we use the native `|>` pipe). Default installer options are fine on every platform.
+
+## 2. Install RStudio Desktop
+
+[Download RStudio Desktop](https://posit.co/download/rstudio-desktop/) (free version). Open it once after installing to confirm it launches.
+
+## 3. Clone (or download) this repository
+
+::: {.panel-tabset}
+
+### Git
+
+```bash
+git clone https://github.com/drarunmitra/idm-jhapsmcon-2026.git
+cd idm-jhapsmcon-2026
+```
+
+### ZIP
+
+Use the green **Code → Download ZIP** button on [the repo page](https://github.com/drarunmitra/idm-jhapsmcon-2026), then unzip.
+
+:::
+
+## 4. Open the R project
+
+Double-click `IDM_EFICON2024.Rproj` (or use *File → Open Project…* in RStudio). This sets the working directory and ensures the `here()` package finds files correctly.
+
+## 5. Install the workshop packages
+
+In the R console:
+
+```r
+source("setup.R")
+```
+
+This runs a one-time package install via `pak`. Plan for **5–15 minutes** depending on your network and how many packages you already have. The script will:
+
+- Install `pak` if missing
+- Configure the Epiverse-TRACE R-Universe repository
+- Install everything you'll need across all five sessions
+
+If a package fails to compile, install Xcode Command-Line Tools (macOS) or Rtools (Windows) and retry.
+
+## 6. Verify the COVID-19 India dataset
+
+```r
+file.exists(here::here("data", "covid_india_daily.csv"))
+#> [1] TRUE
+```
+
+If the file is missing (e.g. you pulled a fresh checkout and want the latest data):
+
+```r
+source(here::here("data", "prepare_covid_india_daily.R"))
+```
+
+This rebuilds the dataset from the JHU CSSE upstream — see the [Data page](dataset.qmd) for details.
+
+## 7. Quick sanity check
+
+Paste this into the console — it should return a tibble with three waves' worth of daily case counts.
+
+```r
+library(tidyverse)
+library(here)
+
+read_csv(here("data", "covid_india_daily.csv"), show_col_types = FALSE) |>
+  arrange(desc(daily_confirmed)) |>
+  head()
+```
+
+If you see the May 2021 peak day at the top of the output, you're ready.
+
+## Optional but recommended
+
+- **GitHub account** — fork the repo, push your activity scripts, share with peers.
+- **The `codefrag` Quarto extension** — if you'll rerender the decks yourself: `quarto add mcanouil/quarto-revealjs-codefrag` from inside the project root.
+
+## Need help?
+
+Open an [issue on GitHub](https://github.com/drarunmitra/idm-jhapsmcon-2026/issues) or reach out before the workshop. Setup issues are much harder to fix in the room.

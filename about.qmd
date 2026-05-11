@@ -1,0 +1,64 @@
+---
+title: "About"
+date-modified: today
+format: html
+---
+
+## Team
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+### Dr. Arun Mitra Peddireddy *(lead)*
+Asst Prof, Dept of CFM, AIIMS Bibinagar.
+Public health data science, spatial epidemiology, infectious disease modelling.
+Trained at LSHTM; member of the R Epidemics Consortium (RECon), Imperial College.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### Prof. Biju Soman
+Professor, Achutha Menon Centre for Health Science Studies (AMCHSS), SCTIMST Trivandrum. Lead architect of the AMCHSS COVID-19 Dashboard featured in Session 5.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### Dr. Gurpreet Singh
+Associate Professor, Armed Forces Medical College (AFMC), Pune. Co-author of the Indian COVID-19 reproduction-number analyses that this workshop draws on.
+:::
+
+::: {.g-col-12 .g-col-md-6}
+### Dr. Adrija Roy
+Public health researcher and trainer. Workshop co-facilitator.
+:::
+
+:::
+
+## Acknowledgments
+
+This workshop draws on teaching material and ideas shared by:
+
+- **Sebastian Funk** (LSHTM) — the *Introduction to Infectious Disease Modelling* course structure.
+- **The Epiverse-TRACE community** — the modern Indian / global infectious-disease modelling toolkit in R.
+- **Allison Horst** — open-licensed dplyr illustrations used in Session 2.
+- **Federica Gazzelloni** — the SIR animation idea (R-Ladies Rome 2023).
+- **AMCHSS / SCTIMST Trivandrum** — the live dashboard featured as the closing case study.
+
+## Third-party assets — attribution
+
+| Asset                                                    | Source                                              | Licence                |
+|----------------------------------------------------------|-----------------------------------------------------|------------------------|
+| Allison Horst dplyr illustrations (`images/tot_dplyr_*.png`) | [github.com/allisonhorst](https://github.com/allisonhorst/stats-illustrations)  | CC-BY 4.0              |
+| Funk pathogen photos (`images/funk/raw/slide_009_*.png`) | S. Funk, LSHTM IDM course                           | Educational use, credit |
+| COVID-19 case data (`data/covid_india_daily.csv`)        | JHU CSSE                                            | CC-BY 4.0              |
+| POLYMOD contact matrix                                   | `socialmixr::polymod` (R-Universe)                  | CC-BY 4.0              |
+| `outbreaks::ebola_sim_clean$linelist`                    | `outbreaks` R package                               | MIT                    |
+| `codefrag` Quarto extension                              | [mcanouil/quarto-revealjs-codefrag](https://github.com/mcanouil/quarto-revealjs-codefrag) | MIT |
+
+## Licence
+
+- **Code** in this repository (`*.R`, `*.qmd`, `_quarto.yml`, prep scripts) — [MIT License](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/LICENSE).
+- **Slide content, prose, and original images** — [CC-BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Reuse freely with attribution.
+- Third-party assets retain their original licences — see the table above.
+
+## Contact
+
+For questions, errors, or to contribute back, open an [issue on GitHub](https://github.com/drarunmitra/idm-jhapsmcon-2026/issues) or email Dr. Arun Mitra Peddireddy.

@@ -1,0 +1,99 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - "index.qmd"
+    - "setup.qmd"
+    - "code.qmd"
+    - "dataset.qmd"
+    - "resources.qmd"
+    - "about.qmd"
+    - "01_foundations.qmd"
+    - "02_just_enough_r.qmd"
+    - "03_compartmental_models.qmd"
+    - "04_scenario_modelling.qmd"
+    - "05_dashboard.qmd"
+  resources:
+    - "data/covid_india_daily.csv"
+    - "data/prepare_covid_india_daily.R"
+    - "scripts/*.R"
+    - "images/**"
+
+website:
+  title: "IDM Workshop · JHAPSMCON 2026"
+  description: "Infectious Disease Modelling in R — One Day Workshop"
+  reader-mode: false
+  back-to-top-navigation: true
+  page-navigation: true
+  search:
+    location: navbar
+    type: overlay
+  navbar:
+    background: light
+    pinned: true
+    left:
+      - href: index.qmd
+        text: Home
+      - href: setup.qmd
+        text: Setup
+      - text: Sessions
+        menu:
+          - href: 01_foundations.qmd
+            text: "1 · Foundations"
+          - href: 02_just_enough_r.qmd
+            text: "2 · Just Enough R"
+          - href: 03_compartmental_models.qmd
+            text: "3 · Compartmental Models"
+          - href: 04_scenario_modelling.qmd
+            text: "4 · Scenario Modelling"
+          - href: 05_dashboard.qmd
+            text: "5 · AMCHSS Dashboard"
+      - href: code.qmd
+        text: Code
+      - href: dataset.qmd
+        text: Data
+      - href: resources.qmd
+        text: Resources
+      - href: about.qmd
+        text: About
+    right:
+      - icon: github
+        href: https://github.com/drarunmitra/idm-jhapsmcon-2026
+        aria-label: Source on GitHub
+  page-footer:
+    border: true
+    center: |
+      © 2026 Dr. Arun Mitra Peddireddy ·
+      [Source on GitHub](https://github.com/drarunmitra/idm-jhapsmcon-2026) ·
+      Built with [Quarto](https://quarto.org)
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-location: right
+    code-copy: true
+    code-overflow: wrap
+    highlight-style: github
+    smooth-scroll: true
+    link-external-newwindow: true
+  revealjs:
+    theme: simple
+    slide-number: c/t
+    code-line-numbers: true
+    code-annotations: select
+    code-overflow: wrap
+    highlight-style: github
+    progress: true
+    hash: true
+    scrollable: false
+    revealjs-plugins:
+      - codefrag
+
+execute:
+  echo: true
+  eval: true
+  warning: false
+  message: false
+  cache: true

@@ -1,0 +1,31 @@
+# R
+.Rhistory
+.RData
+.Renviron
+.Rproj.user/
+
+# macOS
+.DS_Store
+
+# Quarto build artefacts (rebuilt by `quarto render` / `quarto publish`)
+.quarto/
+_site/
+*_cache/
+*_files/
+*.html
+
+# Local archive — preserved locally, not pushed
+archive/
+
+# Facilitator-only notes
+workshop_session_outlines.md
+
+# Local installers
+*.pkg
+
+# Editor / IDE
+.vscode/
+.idea/
+
+/.quarto/
+**/*.quarto_ipynb

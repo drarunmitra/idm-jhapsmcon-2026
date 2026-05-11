@@ -1,0 +1,41 @@
+---
+title: "Resources"
+date-modified: today
+format: html
+---
+
+Curated reading and tooling for after the workshop. Pick **one** book and **one** package this week, not all of them.
+
+## Tutorials and self-paced courses
+
+- **[Epiverse-TRACE tutorials](https://epiverse-trace.github.io/tutorials/)** — tutorials-early, -middle, -late. The same packages we use, taught at three levels.
+- **[The Epidemiologist R Handbook](https://epirhandbook.com/)** — practical recipes for outbreak data work. The first book to reach for.
+- **[RECON Learn](https://www.reconlearn.org/)** — case-study driven; many start from a line list and end at an Rₜ estimate.
+
+## Books
+
+- **Anderson, R. M. & May, R. M.** (1991). *Infectious Diseases of Humans*. Oxford University Press. The foundational text — where most of the R₀ values we quoted come from.
+- **Vynnycky, E. & White, R. G.** (2010). *An Introduction to Infectious Disease Modelling*. OUP. The most accessible classroom textbook.
+- **Keeling, M. J. & Rohani, P.** (2008). *Modeling Infectious Diseases in Humans and Animals*. Princeton. Heavier on dynamics, lighter on code.
+
+## Live tools
+
+- **[AMCHSS COVID-19 Dashboard](https://amchss-sctimst.shinyapps.io/covid_dashboard/)** — Session 5's case study. Open it, click around, then read the source on the dashboard's About page.
+- **[outbreaks](https://www.reconverse.org/outbreaks/)** — every line list you'll need to practise on.
+- **[The Epidemiologist R Handbook — Case studies](https://epirhandbook.com/new_pages/index.html#part-7-disease-modelling)** — paired with theory.
+
+## Going further — Bayesian and stochastic
+
+- **[Stan boarding-school SIR case study](https://mc-stan.org/users/documentation/case-studies/boarding_school_case_study.html)** — the canonical worked example for fitting an SIR to real data with Bayesian methods.
+- **[`EpiNow2`](https://epiforecasts.io/EpiNow2/)** — production-grade Bayesian Rₜ with reporting delays.
+- **[`epichains`](https://epiverse-trace.github.io/epichains/)** — branching-process stochastic models when outbreaks are small.
+- **[`odin2`](https://mrc-ide.github.io/odin2/)** — a DSL for compiled, faster stochastic compartmental models.
+
+## R-Ladies + community talks
+
+- **Gazzelloni, F.** (2023). *Deterministic SIR model with R.* R-Ladies Rome — [github.com/Fgazzelloni/sir-model-with-R](https://github.com/Fgazzelloni/sir-model-with-R) · [slides](https://fgazzelloni.quarto.pub/deterministic-sir-model-with-r/).
+- **Buros, J.** (2023). *Bayesian SIR model with R* — [github.com/jburos/r-ladies-sir-model](https://github.com/jburos/r-ladies-sir-model).
+
+## Workshop homework
+
+Pick **one disease** you care about, **one dataset** you have access to, and **one method** from today. Spend an evening trying it. Email questions.

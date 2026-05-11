@@ -1,0 +1,68 @@
+---
+title: "Data"
+date-modified: today
+format: html
+---
+
+The workshop uses one external dataset — daily COVID-19 case counts for India — built from the [Johns Hopkins CSSE](https://github.com/CSSEGISandData/COVID-19) repository.
+
+## The dataset
+
+| File | Description |
+|------|-------------|
+| `data/covid_india_daily.csv` | One row per day, 2020-01-22 to 2023-03-09 |
+
+Columns:
+
+| Column                 | Type | Description                                  |
+|------------------------|------|----------------------------------------------|
+| `date`                 | date | Calendar date                                |
+| `daily_confirmed`      | int  | New confirmed cases on `date`                |
+| `cumulative_confirmed` | int  | Running total of confirmed cases             |
+
+1,143 rows total. Wave 2 (Delta) peaks at 414,188 cases on 2021-05-06.
+
+## Quick look in R
+
+```r
+library(tidyverse); library(here)
+
+covid <- read_csv(here("data", "covid_india_daily.csv"), show_col_types = FALSE)
+
+# Top 5 peak days
+covid |>
+  arrange(desc(daily_confirmed)) |>
+  head(5)
+
+# Visualise the three waves
+covid |>
+  ggplot(aes(date, daily_confirmed)) +
+  geom_col(fill = "steelblue") +
+  scale_y_continuous(labels = scales::comma) +
+  labs(x = NULL, y = "Daily confirmed cases",
+       title = "COVID-19 India — JHU CSSE")
+```
+
+## Where it comes from
+
+The prep script ([`data/prepare_covid_india_daily.R`](https://github.com/drarunmitra/idm-jhapsmcon-2026/blob/main/data/prepare_covid_india_daily.R)) does three things:
+
+1. Downloads the JHU CSSE confirmed-cases global time series.
+2. Filters to India, pivots from wide (one column per date) to long (one row per date).
+3. Computes daily counts as differences of the cumulative series, clamping negatives to zero (occasional reporting corrections).
+
+Rebuild it any time:
+
+```r
+source(here::here("data", "prepare_covid_india_daily.R"))
+```
+
+The output is checked into the repo so participants don't need an internet connection on workshop day.
+
+## Attribution
+
+The source data is provided by the [Center for Systems Science and Engineering at Johns Hopkins University](https://systems.jhu.edu/research/public-health/ncov/) under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). The CSSE archive was retired on 2023-03-10; we use the final snapshot.
+
+If you redistribute the derived dataset in your own work, please cite:
+
+> Dong, E., Du, H., & Gardner, L. (2020). *An interactive web-based dashboard to track COVID-19 in real time.* The Lancet Infectious Diseases, 20(5), 533-534.
