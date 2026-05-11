@@ -28,9 +28,9 @@ For each panel, ask:
 
 The handout has a 4-column table — fill it as we go.
 
-## Panel 1 — Home
+## Panel 1 — Home {.smaller}
 
-<!-- TODO: insert PNG screenshot of Home panel, alt: "AMCHSS dashboard home page with value boxes, choropleth maps and 14-day epi curve" -->
+![](images/dashboard_home.png){fig-align="center" width="92%"}
 
 Five value boxes (Confirmed · Active · Recovered · Deceased · % Active in last week), three map tabs (Deaths per 1000 · Active per lakh · % >18 yrs vaccinated), and a 14-day moving-average epicurve.
 
@@ -63,7 +63,9 @@ Pick Kerala or Maharashtra. Show how the wave split snaps the same series into t
 
 ### R~t~ in detail
 
-<!-- TODO: insert PNG of the 3D plotly Rt ribbon -->
+![](images/dashboard_epi_params.png){fig-align="center" width="88%"}
+
+Above: the *Growth Rate* tab (log-linear `r` by state, 95% CI). The *Effective R~t~* tab is a 3D `plotly` ribbon — best seen live.
 
 Method: `R0::est.R0.TD()` — Wallinga & Teunis (2004) time-dependent R, gamma generation time (mean 4.4, sd 3 days), 95% bootstrap CI per state.
 
@@ -75,11 +77,11 @@ Same renewal-equation family as our Foundations demo. Different package (`R0` vs
 Spend most time on the R~t~ tab. There are several R~t~ packages — EpiEstim (Cori), R0 (Wallinga–Teunis), EpiNow2 (Bayesian). Pick one, document your choice.
 :::
 
-## Panel 4 — Projections
+## Panel 4 — Projections {.smaller}
 
-<!-- TODO: insert PNG of Projections panel -->
+![](images/dashboard_projections.png){fig-align="center" width="92%"}
 
-State selector → 15-day forward forecast of daily incidence using `projections::project()` — branching-process simulation seeded with the recent log-linear fit.
+State selector → 15-day forward forecast of daily incidence using `projections::project()` — branching-process simulation seeded with the recent log-linear fit. The faint forecast lines at the right edge fan by assumed change in R~t~.
 
 ::: {.notes}
 Forward projections are a tail of forecasts, not a single line. Ask: where's the uncertainty in this plot?
